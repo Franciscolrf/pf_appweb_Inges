@@ -26,6 +26,20 @@ nav {
     top: 20px;
 }
 
+li {
+    display: flex;
+    margin: 0 10px;
+    padding: 10px;
+    background-color: #2e2e2e;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+li:hover {
+    background-color: #3a3a3a;
+    transform: scale(1.05);
+}
+
 .exit-btn {
     font-size: 20px;
     color: #fff;
