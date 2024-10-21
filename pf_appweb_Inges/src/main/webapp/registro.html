@@ -43,15 +43,28 @@
                 </label>
                 <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
 
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras">
-
                 <label for="estado">Estado:</label>
                 <select id="estado" name="estado" required>
                     <option value="" disabled selected>Selecciona tu estado</option>
                     <!-- Aquí se van a generar dinámicamente los estados desde la base de datos -->
                     <option value="1">Estado 1</option>
                     <option value="2">Estado 2</option>
+                </select>
+
+                <label for="ciudad">Ciudad:</label>
+                <select id="ciudad" name="ciudad" required>
+                    <option value="" disabled selected>Selecciona tu ciudad</option>
+                    <!-- Aquí se van a generar dinámicamente las ciudades desde la base de datos -->
+                    <option value="1">Ciudad 1</option>
+                    <option value="2">Ciudad 2</option>
+                </select>
+
+                <label for="municipio">Municipio:</label>
+                <select id="municipio" name="municipio" required>
+                    <option value="" disabled selected>Selecciona tu municipio</option>
+                    <!-- Aquí se van a generar dinámicamente los municipios desde la base de datos -->
+                    <option value="1">Municipio 1</option>
+                    <option value="2">Municipio 2</option>
                 </select>
 
                 <label for="fechaNacimiento">Fecha de Nacimiento:</label>
@@ -69,9 +82,11 @@
                 </button>
             </form>
 
-            <a href="index.html">  <button class="exit-btn"><i class="fa-solid fa-xmark"></i>
-            </button> </a>
-            
+            <a href="index.html">  
+                <button class="exit-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button> 
+            </a>
         </section>
     </main>
 </body>
