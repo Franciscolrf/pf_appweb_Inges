@@ -1,0 +1,172 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    background-image: url("https://es.gizmodo.com/app/uploads/2024/03/a8648d76c23fa97dd123dec5a4230463.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-attachment: fixed;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+
+.container {
+    margin-top: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+.form-container {
+    border: 3px solid #000000;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+
+    position: relative;
+    
+}
+
+.salidabtn{
+    border-bottom:  2px solid #ccc;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.icon-user {
+    border-bottom:  2px solid #ccc;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0d1b2a;
+    font-size: 24px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+
+input[type="file"] {
+    display: none; 
+}
+
+.file-label {
+    display: inline-flex; 
+    align-items: center; 
+    cursor: pointer; 
+    background-color: #e0e1dd; 
+    color: white; 
+    border-radius: 5px; 
+}
+
+.file-label:hover {
+    background-color: #c8c9c3;
+}
+
+
+label[for="avatar"] {
+    display: inline-block;
+    background-color: #bbbbbb81;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+label[for="avatar"]:hover {
+    background-color: #c8c9c3;
+}
+
+button.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button.btn:hover {
+    background-color: #6c757d;
+}
+
+button.exit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 40px;
+    color: #343a40;
+    cursor: pointer;
+}
+
+button.exit-btn:hover {
+    color: #6c757d;
+}
+
+.file-icon{
+    text-align: center;
+    font-size : 30px;
+}
+
+.login-btn{
+
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 15px;
+    background-color: #343a40;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-btn:hover{
+
+    background-color: #6c757d;
+}
