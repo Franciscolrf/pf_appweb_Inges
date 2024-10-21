@@ -9,6 +9,10 @@
 - Raul Alejandro Sauceda Rayos
 - David Acosta Fajardo
 
+**Prototipos**
+
+https://www.figma.com/proto/wkmOIWj5onEtfV4r4746H5/App-web?node-id=0-1&t=i3juoZnSnbMWqZ8a-1
+
 **Proyecto Final**
 
 Utilizando estilos CSS y lenguaje HTML.
