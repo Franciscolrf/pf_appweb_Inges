@@ -69,7 +69,7 @@ input:focus {
     border-color: #007bff;
 }
 
-button.btn {
+    .btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,6 +81,7 @@ button.btn {
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+    width: 100%;
 }
 
 button.btn:hover {
