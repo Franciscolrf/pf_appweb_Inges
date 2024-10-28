@@ -9,7 +9,7 @@ import modelo.TipoUsuario;
 
 public class Mapeos {
 
-    public static Usuario dtoToUsuario(UsuarioDTO usuarioDTO) {
+    public Usuario dtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDTO.getId());
         usuario.setNombreCompleto(usuarioDTO.getNombreCompleto());
@@ -19,6 +19,7 @@ public class Mapeos {
         usuario.setContrasenia(usuarioDTO.getContrasenia());
         usuario.setGenero(usuarioDTO.getGenero()); 
         usuario.setTipoUsuario(usuarioDTO.getTipo()); 
+        usuario.setFechaNacimiento(usuarioDTO.getFechaNacimiento());
 
         if (usuarioDTO.getDireccion() != null) {
             Direccion direccion = dtoToDireccion(usuarioDTO.getDireccion());
@@ -28,7 +29,7 @@ public class Mapeos {
         return usuario;
     }
 
-    public static UsuarioDTO usuarioToDTO(Usuario usuario) {
+    public UsuarioDTO usuarioToDTO(Usuario usuario) {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
         usuarioDTO.setNombreCompleto(usuario.getNombreCompleto());
@@ -38,6 +39,7 @@ public class Mapeos {
         usuarioDTO.setContrasenia(usuario.getContrasenia());
         usuarioDTO.setGenero(usuario.getGenero());
         usuarioDTO.setTipo(usuario.getTipoUsuario());
+        usuarioDTO.setFechaNacimiento(usuario.getFechaNacimiento());
 
         if (usuario.getDireccion() != null) {
             DireccionDTO direccionDTO = direccionToDTO(usuario.getDireccion());
@@ -47,7 +49,7 @@ public class Mapeos {
         return usuarioDTO;
     }
 
-    public static Direccion dtoToDireccion(DireccionDTO direccionDTO) {
+    public Direccion dtoToDireccion(DireccionDTO direccionDTO) {
         Direccion direccion = new Direccion();
         direccion.setId(direccionDTO.getId());
         direccion.setCalle(direccionDTO.getCalle());
@@ -56,7 +58,7 @@ public class Mapeos {
         return direccion;
     }
 
-    public static DireccionDTO direccionToDTO(Direccion direccion) {
+    public DireccionDTO direccionToDTO(Direccion direccion) {
         DireccionDTO direccionDTO = new DireccionDTO();
         direccionDTO.setId(direccion.getId());
         direccionDTO.setCalle(direccion.getCalle());
@@ -65,7 +67,7 @@ public class Mapeos {
         return direccionDTO;
     }
 
-    private static Genero stringToGenero(String generoStr) {
+    public Genero stringToGenero(String generoStr) {
         switch (generoStr.toUpperCase()) {
             case "MASCULINO":
                 return Genero.MASCULINO;
@@ -77,7 +79,7 @@ public class Mapeos {
     }
 
 
-    private static TipoUsuario stringToTipoUsuario(String tipoStr) {
+    public TipoUsuario stringToTipoUsuario(String tipoStr) {
         switch (tipoStr.toUpperCase()) {
             case "ADMOR":
                 return TipoUsuario.ADMOR;
@@ -87,4 +89,5 @@ public class Mapeos {
                 throw new IllegalArgumentException("Tipo de usuario inválido: " + tipoStr);
         }
     }
+
 }

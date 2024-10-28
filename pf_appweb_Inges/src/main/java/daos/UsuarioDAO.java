@@ -5,13 +5,13 @@
 package daos;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import interfaces.IUsuarioDAO;
-import modelo.Genero;
-import modelo.TipoUsuario;
+import mapeos.Mapeos;
 import modelo.Usuario;
 
 /**
@@ -23,7 +23,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public void registrarUsuario(Usuario usuario) {
         validarUsuario(usuario);
-        String sql = "INSERT INTO Usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, genero, tipo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, fechaNacimiento, genero, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = ConexionBD.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -33,8 +33,9 @@ public class UsuarioDAO implements IUsuarioDAO {
             statement.setString(3, usuario.getContrasenia());
             statement.setString(4, usuario.getTelefono());
             statement.setString(5, usuario.getAvatar());
-            statement.setString(6, usuario.getGenero().name());
-            statement.setString(7, usuario.getTipoUsuario().name());
+            statement.setDate(6, new Date(usuario.getFechaNacimiento().getTime()));
+            statement.setString(7, usuario.getGenero().name());
+            statement.setString(8, usuario.getTipoUsuario().name());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -45,7 +46,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public void modificarUsuario(Usuario usuario) {
         validarUsuario(usuario);
-        String sql = "UPDATE Usuarios SET nombreCompleto = ?, correo = ?, contrasenia = ?, telefono = ?, avatar = ?, genero = ?, tipo = ? WHERE id = ?";
+        String sql = "UPDATE Usuarios SET nombreCompleto = ?, correo = ?, contrasenia = ?, telefono = ?, avatar = ?, fechaNacimiento = ?, genero = ?, tipo = ? WHERE id = ?";
 
         try (Connection connection = ConexionBD.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -55,9 +56,10 @@ public class UsuarioDAO implements IUsuarioDAO {
             statement.setString(3, usuario.getContrasenia());
             statement.setString(4, usuario.getTelefono());
             statement.setString(5, usuario.getAvatar());
-            statement.setString(6, usuario.getGenero().name());
-            statement.setString(7, usuario.getTipoUsuario().name());
-            statement.setLong(8, usuario.getId());
+            statement.setDate(6, new Date(usuario.getFechaNacimiento().getTime()));
+            statement.setString(7, usuario.getGenero().name());
+            statement.setString(8, usuario.getTipoUsuario().name());
+            statement.setLong(9, usuario.getId());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -81,11 +83,12 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     @Override
     public Usuario obtenerUsuario(int id) {
+        Mapeos mapeos = new Mapeos();
         String sql = "SELECT * FROM Usuarios WHERE id = ?";
         Usuario usuario = null;
 
         try (Connection connection = ConexionBD.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -97,8 +100,9 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setCorreo(resultSet.getString("correo"));
                 usuario.setTelefono(resultSet.getString("telefono"));
                 usuario.setAvatar(resultSet.getString("avatar"));
-                usuario.setGenero(stringToGenero(resultSet.getString("genero")));
-                usuario.setTipoUsuario(stringToTipoUsuario(resultSet.getString("tipo")));
+                usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento")); 
+                usuario.setGenero(mapeos.stringToGenero(resultSet.getString("genero")));
+                usuario.setTipoUsuario(mapeos.stringToTipoUsuario(resultSet.getString("tipo")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -133,7 +137,5 @@ public class UsuarioDAO implements IUsuarioDAO {
         }
 
     }
-
-    
 
 }
