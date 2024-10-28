@@ -15,5 +15,5 @@ public interface IPostDAO {
     void agregarPost(Post post);
     void modificarPost(Post post);
     void eliminarPost(Post post);
-    void consultarPost(int id);
+    Post consultarPost(int id);
 }

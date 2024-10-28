@@ -32,7 +32,7 @@ public class PostDAO implements IPostDAO {
     }
 
     @Override
-    public void consultarPost(int id) {
+    public Post consultarPost(int id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'consultarPost'");
     }

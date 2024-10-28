@@ -14,5 +14,5 @@ public interface IUsuarioDAO {
     void registrarUsuario(Usuario usuario);
     void modificarUsuario(Usuario usuario);
     void eliminarUsuario(Usuario usuario);
-    void obtenerUsuario(int id);
+    Usuario obtenerUsuario(int id);
 }
