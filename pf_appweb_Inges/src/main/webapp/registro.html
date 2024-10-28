@@ -12,7 +12,7 @@
 <body>
     <main class="container">
         <section class="form-container">
-            <a href="login.html" class="login-btn"> ¿Ya tienes cuenta? Loguéate!</a>
+            <a href="login.html" class="login-btn">¿Ya tienes cuenta? Loguéate!</a>
             <div class="icon-user">
                 <i class="fa fa-user" aria-hidden="true"></i>
             </div>
@@ -35,7 +35,7 @@
                 <label for="telefono">Teléfono:</label>
                 <input type="tel" id="telefono" name="telefono" required pattern="[0-9]{10}" title="Solo se permiten números">
 
-                <label>Avatar(Opcional):</label>
+                <label>Avatar (Opcional):</label>
                 <label for="avatar" class="file-label">
                     <div class="file-icon">
                         <i class="fa fa-upload" aria-hidden="true"></i>
@@ -43,29 +43,14 @@
                 </label>
                 <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
 
-                <label for="estado">Estado:</label>
-                <select id="estado" name="estado" required>
-                    <option value="" disabled selected>Selecciona tu estado</option>
-                    <!-- Aquí se van a generar dinámicamente los estados desde la base de datos -->
-                    <option value="1">Estado 1</option>
-                    <option value="2">Estado 2</option>
-                </select>
+                <label for="direccionCalle">Calle:</label>
+                <input type="text" id="direccionCalle" name="direccionCalle" required title="Ingrese su calle">
 
-                <label for="ciudad">Ciudad:</label>
-                <select id="ciudad" name="ciudad" required>
-                    <option value="" disabled selected>Selecciona tu ciudad</option>
-                    <!-- Aquí se van a generar dinámicamente las ciudades desde la base de datos -->
-                    <option value="1">Ciudad 1</option>
-                    <option value="2">Ciudad 2</option>
-                </select>
+                <label for="direccionNumero">Número:</label>
+                <input type="text" id="direccionNumero" name="direccionNumero" required title="Ingrese su número">
 
-                <label for="municipio">Municipio:</label>
-                <select id="municipio" name="municipio" required>
-                    <option value="" disabled selected>Selecciona tu municipio</option>
-                    <!-- Aquí se van a generar dinámicamente los municipios desde la base de datos -->
-                    <option value="1">Municipio 1</option>
-                    <option value="2">Municipio 2</option>
-                </select>
+                <label for="direccionCiudad">Ciudad:</label>
+                <input type="text" id="direccionCiudad" name="direccionCiudad" required title="Ingrese su ciudad">
 
                 <label for="fechaNacimiento">Fecha de Nacimiento:</label>
                 <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
