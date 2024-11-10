@@ -1,4 +1,5 @@
-<DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <!DOCTYPE html>
     <html lang="es">
 
     <head>
@@ -26,11 +27,17 @@
                     <label for="contrasenia">Contraseña:</label>
                     <input type="password" id="contrasenia" name="contrasenia" required minlength="8"
                         title="Debe tener al menos 8 caracteres">
-                    
-                        <button type="submit" class="btn" formaction="publicaciones.html">
-                            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
-                        </button>
 
+                    <button type="submit" class="btn">
+                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                    </button>
+
+                    <% String error=request.getParameter("error"); %>
+                        <% if ("incorrectCredentials".equals(error)) { %>
+                            <p style="color: red;">Correo o contraseña incorrectos. Inténtalo de nuevo.</p>
+                            <% } else if ("internalError".equals(error)) { %>
+                                <p style="color: red;">Ocurrió un error interno. Inténtalo más tarde.</p>
+                                <% }%>
                 </form>
 
                 <div class="register-prompt">

@@ -97,7 +97,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     @Override
     public Usuario obtenerUsuario(int id) {
         Mapeos mapeos = new Mapeos();
-        String sql = "SELECT * FROM Usuarios WHERE id = ?";
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
         Usuario usuario = null;
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -125,7 +125,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     public Usuario obtenerUsuarioPorCorreo(String correo) throws Exception {
         Usuario usuario = null;
-        String sql = "SELECT * FROM Usuarios WHERE correo = ?";
+        String sql = "SELECT * FROM usuarios WHERE correo = ?";
 
         try (Connection connection = ConexionBD.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -139,9 +139,8 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setNombreCompleto(resultSet.getString("nombreCompleto"));
                 usuario.setCorreo(resultSet.getString("correo"));
                 
-                // Desencriptar la contraseña antes de asignarla
                 String contraseniaEncriptada = resultSet.getString("contrasenia");
-                String contraseniaDesencriptada = encriptar.desencriptar(contraseniaEncriptada);
+                String contraseniaDesencriptada = Encriptar.desencriptar(contraseniaEncriptada);
                 usuario.setContrasenia(contraseniaDesencriptada);
                 
                 usuario.setTelefono(resultSet.getString("telefono"));
@@ -157,6 +156,22 @@ public class UsuarioDAO implements IUsuarioDAO {
         return usuario;
     }
 
+    public UsuarioDTO validarLogin(String correo, String contraseniaIngresada) throws Exception {
+        Usuario usuario = obtenerUsuarioPorCorreo(correo);
+
+        if (usuario != null) {
+            // Encriptar la contraseña ingresada para compararla con la almacenada
+            String contraseniaIngresadaEncriptada = Encriptar.encriptar(contraseniaIngresada);
+            
+            // Comparar la contraseña encriptada
+            if (usuario.getContrasenia().equals(contraseniaIngresadaEncriptada)) {
+                // Convertir Usuario a UsuarioDTO y devolverlo
+                return mapeos.usuarioToDTO(usuario);
+            }
+        }
+
+        return null; // Retornar null si no coincide o no existe
+    }
 
     private void validarUsuario(UsuarioDTO usuario) {
         if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {

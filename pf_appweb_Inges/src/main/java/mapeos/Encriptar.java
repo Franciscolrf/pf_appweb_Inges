@@ -1,7 +1,6 @@
 package mapeos;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
@@ -9,6 +8,8 @@ import java.util.Base64;
 public class Encriptar {
 
     private static final String ALGORITHM = "AES";
+    // Mantén esta clave constante y asegúrate de que tenga exactamente 16 caracteres para AES
+    private static final String KEY = "1234567890123456";
 
     public static String encriptar(String password) throws Exception {
         SecretKey key = getKey();
@@ -27,8 +28,8 @@ public class Encriptar {
         return new String(decrypted);
     }
 
+    // Usamos la misma clave fija para encriptar y desencriptar
     private static SecretKey getKey() {
-        String keyStr = "1234567890123456";
-        return new SecretKeySpec(keyStr.getBytes(), ALGORITHM);
+        return new SecretKeySpec(KEY.getBytes(), ALGORITHM);
     }
 }

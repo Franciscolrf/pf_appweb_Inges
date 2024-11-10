@@ -140,7 +140,7 @@ public class uploadServlet extends HttpServlet {
         usuarioDAO.registrarUsuario(usuario);
 
         // Redirigir al login después de un registro exitoso
-        response.sendRedirect("login.html");
+        response.sendRedirect("login.jsp");
     }
 
     private String getFileName(Part part) {
