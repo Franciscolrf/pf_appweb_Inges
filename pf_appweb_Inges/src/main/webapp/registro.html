@@ -19,10 +19,10 @@
 
             <h1>Registro de Usuario</h1>
 
-            <form action="#" method="post" class="register-form">
+            <form action="/pf_appweb_Inges/uploadServlet" method="post" class="register-form" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre completo:</label>
                 <input type="text" id="nombreCompleto" name="nombreCompleto" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras">
-                
+
                 <label for="correo">Correo Electrónico:</label>
                 <input type="email" id="correo" name="correo" required pattern="^[a-zA-Z0-9._%+-]+@.+$" title="El correo debe contener un @">
 
@@ -38,19 +38,13 @@
                 <label>Avatar (Opcional):</label>
                 <label for="avatar" class="file-label">
                     <div class="file-icon">
-                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        <i id="uploadIcon" class="fa fa-upload" aria-hidden="true"></i>
                     </div>
                 </label>
-                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" onchange="changeIconColor()">
 
-                <label for="direccionCalle">Calle:</label>
-                <input type="text" id="direccionCalle" name="direccionCalle" required title="Ingrese su calle">
-
-                <label for="direccionNumero">Número:</label>
-                <input type="text" id="direccionNumero" name="direccionNumero" required title="Ingrese su número">
-
-                <label for="direccionCiudad">Ciudad:</label>
-                <input type="text" id="direccionCiudad" name="direccionCiudad" required title="Ingrese su ciudad">
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" required title="Ingrese su dirección">
 
                 <label for="fechaNacimiento">Fecha de Nacimiento:</label>
                 <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
@@ -59,7 +53,6 @@
                 <select id="genero" name="genero" required>
                     <option value="masculino">Masculino</option>
                     <option value="femenino">Femenino</option>
-                    <option value="otro">Otro</option>
                 </select>
 
                 <button type="submit" class="btn">
@@ -67,13 +60,20 @@
                 </button>
             </form>
 
-            <a href="index.html">  
+            <a href="index.html">
                 <button class="exit-btn">
                     <i class="fa-solid fa-xmark"></i>
-                </button> 
+                </button>
             </a>
         </section>
     </main>
+
+    <script>
+        function changeIconColor() {
+            const uploadIcon = document.getElementById("uploadIcon");
+            uploadIcon.style.color = "green";
+        }
+    </script>
 </body>
 
 </html>
