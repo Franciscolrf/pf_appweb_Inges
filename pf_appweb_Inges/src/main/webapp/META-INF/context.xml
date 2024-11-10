@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/pf_appweb_Inges"/>
+<Context path="/pf_appweb_Inges">
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="redSocial" password="fran" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/mysql?zeroDateTimeBehavior=CONVERT_TO_NULL" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="red" password="fran" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/red_social?zeroDateTimeBehavior=CONVERT_TO_NULL" username="root"/>
+</Context>

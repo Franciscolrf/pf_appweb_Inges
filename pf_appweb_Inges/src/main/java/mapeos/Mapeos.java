@@ -1,9 +1,7 @@
 package mapeos;
 
 import dtos.UsuarioDTO;
-import dtos.DireccionDTO;
 import modelo.Usuario;
-import modelo.Direccion;
 import modelo.Genero;
 import modelo.TipoUsuario;
 
@@ -18,13 +16,10 @@ public class Mapeos {
         usuario.setAvatar(usuarioDTO.getAvatar());
         usuario.setContrasenia(usuarioDTO.getContrasenia());
         usuario.setGenero(usuarioDTO.getGenero()); 
-        usuario.setTipoUsuario(usuarioDTO.getTipo()); 
+        usuario.setTipoUsuario(usuarioDTO.getTipoUsuario()); 
         usuario.setFechaNacimiento(usuarioDTO.getFechaNacimiento());
-
-        if (usuarioDTO.getDireccion() != null) {
-            Direccion direccion = dtoToDireccion(usuarioDTO.getDireccion());
-            usuario.setDireccion(direccion); 
-        }
+        usuario.setDireccion(usuarioDTO.getDireccion());
+        
         
         return usuario;
     }
@@ -38,33 +33,11 @@ public class Mapeos {
         usuarioDTO.setAvatar(usuario.getAvatar());
         usuarioDTO.setContrasenia(usuario.getContrasenia());
         usuarioDTO.setGenero(usuario.getGenero());
-        usuarioDTO.setTipo(usuario.getTipoUsuario());
+        usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
         usuarioDTO.setFechaNacimiento(usuario.getFechaNacimiento());
-
-        if (usuario.getDireccion() != null) {
-            DireccionDTO direccionDTO = direccionToDTO(usuario.getDireccion());
-            usuarioDTO.setDireccion(direccionDTO);
-        }
+        usuarioDTO.setDireccion(usuario.getDireccion());
         
         return usuarioDTO;
-    }
-
-    public Direccion dtoToDireccion(DireccionDTO direccionDTO) {
-        Direccion direccion = new Direccion();
-        direccion.setId(direccionDTO.getId());
-        direccion.setCalle(direccionDTO.getCalle());
-        direccion.setNumero(direccionDTO.getNumero());
-        direccion.setCiudad(direccionDTO.getCiudad());
-        return direccion;
-    }
-
-    public DireccionDTO direccionToDTO(Direccion direccion) {
-        DireccionDTO direccionDTO = new DireccionDTO();
-        direccionDTO.setId(direccion.getId());
-        direccionDTO.setCalle(direccion.getCalle());
-        direccionDTO.setNumero(direccion.getNumero());
-        direccionDTO.setCiudad(direccion.getCiudad());
-        return direccionDTO;
     }
 
     public Genero stringToGenero(String generoStr) {

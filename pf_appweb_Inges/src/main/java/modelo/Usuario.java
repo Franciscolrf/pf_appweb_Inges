@@ -10,10 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
@@ -40,14 +39,12 @@ public class Usuario implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
-
-    @OneToOne(mappedBy = "usuario")
-    private Direccion direccion;
+    private String direccion;
 
     public Usuario() {
     }
 
-    public Usuario(String nombreCompleto, String correo, String contrasenia, String telefono, String avatar, Date fechaNacimiento, Genero genero, TipoUsuario tipoUsuario, Direccion direccion) {
+    public Usuario(String nombreCompleto, String correo, String contrasenia, String telefono, String avatar, Date fechaNacimiento, Genero genero, TipoUsuario tipoUsuario, String direccion) {
         this.nombreCompleto = nombreCompleto;
         this.correo = correo;
         this.contrasenia = contrasenia;
@@ -59,7 +56,7 @@ public class Usuario implements Serializable {
         this.direccion = direccion;
     }
 
-    public Usuario(Long id, String nombreCompleto, String correo, String contrasenia, String telefono, String avatar, Date fechaNacimiento, Genero genero, TipoUsuario tipoUsuario, Direccion direccion) {
+    public Usuario(Long id, String nombreCompleto, String correo, String contrasenia, String telefono, String avatar, Date fechaNacimiento, Genero genero, TipoUsuario tipoUsuario, String direccion) {
         this.id = id;
         this.nombreCompleto = nombreCompleto;
         this.correo = correo;
@@ -157,11 +154,11 @@ public class Usuario implements Serializable {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public Direccion getDireccion() {
+    public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(Direccion direccion) {
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 

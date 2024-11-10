@@ -4,6 +4,7 @@
  */
 package daos;
 
+import dtos.UsuarioDTO;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -11,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import interfaces.IUsuarioDAO;
+import mapeos.Encriptar;
 import mapeos.Mapeos;
 import modelo.Usuario;
 
@@ -20,36 +22,46 @@ import modelo.Usuario;
  */
 public class UsuarioDAO implements IUsuarioDAO {
 
+    Encriptar encriptar = new Encriptar();
+    Mapeos mapeos = new Mapeos();
+
     @Override
-    public void registrarUsuario(Usuario usuario) {
-        validarUsuario(usuario);
-        String sql = "INSERT INTO Usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, fechaNacimiento, genero, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public void registrarUsuario(UsuarioDTO usuarioDTO) {
+        try {
+            // Convertir UsuarioDTO a Usuario utilizando Mapeos
+            Usuario usuario = mapeos.dtoToUsuario(usuarioDTO);
 
-        try (Connection connection = ConexionBD.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+            // Encriptar la contraseña antes de guardarla en la base de datos
+            String contraseniaEncriptada = Encriptar.encriptar(usuario.getContrasenia());
+            usuario.setContrasenia(contraseniaEncriptada);
 
-            statement.setString(1, usuario.getNombreCompleto());
-            statement.setString(2, usuario.getCorreo());
-            statement.setString(3, usuario.getContrasenia());
-            statement.setString(4, usuario.getTelefono());
-            statement.setString(5, usuario.getAvatar());
-            statement.setDate(6, new Date(usuario.getFechaNacimiento().getTime()));
-            statement.setString(7, usuario.getGenero().name());
-            statement.setString(8, usuario.getTipoUsuario().name());
+            String sql = "INSERT INTO usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, direccion, fechaNacimiento, genero, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
+            try (Connection connection = ConexionBD.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                statement.setString(1, usuario.getNombreCompleto());
+                statement.setString(2, usuario.getCorreo());
+                statement.setString(3, usuario.getContrasenia());
+                statement.setString(4, usuario.getTelefono());
+                statement.setString(5, usuario.getAvatar());
+                statement.setString(6, usuario.getDireccion()); // Guardar la dirección como un solo String
+                statement.setDate(7, new Date(usuario.getFechaNacimiento().getTime()));
+                statement.setString(8, usuario.getGenero().name());
+                statement.setString(9, usuario.getTipoUsuario().name());
+
+                statement.executeUpdate();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void modificarUsuario(Usuario usuario) {
-        validarUsuario(usuario);
         String sql = "UPDATE Usuarios SET nombreCompleto = ?, correo = ?, contrasenia = ?, telefono = ?, avatar = ?, fechaNacimiento = ?, genero = ?, tipo = ? WHERE id = ?";
 
-        try (Connection connection = ConexionBD.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, usuario.getNombreCompleto());
             statement.setString(2, usuario.getCorreo());
@@ -71,8 +83,7 @@ public class UsuarioDAO implements IUsuarioDAO {
     public void eliminarUsuario(Usuario usuario) {
         String sql = "DELETE FROM Usuarios WHERE id = ?";
 
-        try (Connection connection = ConexionBD.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setLong(1, usuario.getId());
             statement.executeUpdate();
@@ -87,8 +98,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         String sql = "SELECT * FROM Usuarios WHERE id = ?";
         Usuario usuario = null;
 
-        try (Connection connection = ConexionBD.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -100,7 +110,7 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setCorreo(resultSet.getString("correo"));
                 usuario.setTelefono(resultSet.getString("telefono"));
                 usuario.setAvatar(resultSet.getString("avatar"));
-                usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento")); 
+                usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento"));
                 usuario.setGenero(mapeos.stringToGenero(resultSet.getString("genero")));
                 usuario.setTipoUsuario(mapeos.stringToTipoUsuario(resultSet.getString("tipo")));
             }
@@ -111,7 +121,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         return usuario;
     }
 
-    private void validarUsuario(Usuario usuario) {
+    private void validarUsuario(UsuarioDTO usuario) {
         if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {
             throw new IllegalArgumentException("El nombre completo es obligatorio.");
         }
@@ -125,15 +135,7 @@ public class UsuarioDAO implements IUsuarioDAO {
             throw new IllegalArgumentException("El teléfono debe tener 10 dígitos.");
         }
         if (usuario.getDireccion() != null) {
-            if (usuario.getDireccion().getCalle() == null || usuario.getDireccion().getCalle().isEmpty()) {
-                throw new IllegalArgumentException("La calle es obligatoria.");
-            }
-            if (usuario.getDireccion().getNumero() == null || usuario.getDireccion().getNumero().isEmpty()) {
-                throw new IllegalArgumentException("El número es obligatorio.");
-            }
-            if (usuario.getDireccion().getCiudad() == null || usuario.getDireccion().getCiudad().isEmpty()) {
-                throw new IllegalArgumentException("La ciudad es obligatoria.");
-            }
+            throw new IllegalArgumentException("La dirección es obligatoria.");
         }
 
     }

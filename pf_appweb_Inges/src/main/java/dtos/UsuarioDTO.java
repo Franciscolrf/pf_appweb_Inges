@@ -4,7 +4,7 @@
  */
 package dtos;
 
-import java.util.Date;
+import java.sql.Date;
 
 import modelo.Genero;
 import modelo.TipoUsuario;
@@ -24,7 +24,7 @@ public class UsuarioDTO {
     private Date fechaNacimiento;
     private Genero genero;
     private TipoUsuario tipo;
-    private DireccionDTO direccion;
+    private String direccion;
 
     public UsuarioDTO() {
     }
@@ -93,19 +93,19 @@ public class UsuarioDTO {
         this.genero = genero;
     }
 
-    public TipoUsuario getTipo() {
+    public TipoUsuario getTipoUsuario() {
         return tipo;
     }
 
-    public void setTipo(TipoUsuario tipo) {
+    public void setTipoUsuario(TipoUsuario tipo) {
         this.tipo = tipo;
     }
 
-    public DireccionDTO getDireccion() {
+    public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(DireccionDTO direccion) {
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 

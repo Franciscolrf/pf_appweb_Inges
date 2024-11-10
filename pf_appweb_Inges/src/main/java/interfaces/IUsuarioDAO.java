@@ -4,6 +4,7 @@
  */
 package interfaces;
 
+import dtos.UsuarioDTO;
 import modelo.Usuario;
 
 /**
@@ -11,7 +12,7 @@ import modelo.Usuario;
  * @author Fran
  */
 public interface IUsuarioDAO {
-    void registrarUsuario(Usuario usuario);
+    void registrarUsuario(UsuarioDTO usuario);
     void modificarUsuario(Usuario usuario);
     void eliminarUsuario(Usuario usuario);
     Usuario obtenerUsuario(int id);
