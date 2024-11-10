@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import interfaces.IUsuarioDAO;
 import mapeos.Encriptar;
 import mapeos.Mapeos;
+import modelo.Genero;
+import modelo.TipoUsuario;
 import modelo.Usuario;
 
 /**
@@ -120,6 +122,41 @@ public class UsuarioDAO implements IUsuarioDAO {
 
         return usuario;
     }
+
+    public Usuario obtenerUsuarioPorCorreo(String correo) throws Exception {
+        Usuario usuario = null;
+        String sql = "SELECT * FROM Usuarios WHERE correo = ?";
+
+        try (Connection connection = ConexionBD.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, correo);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                usuario = new Usuario();
+                usuario.setId(resultSet.getLong("id"));
+                usuario.setNombreCompleto(resultSet.getString("nombreCompleto"));
+                usuario.setCorreo(resultSet.getString("correo"));
+                
+                // Desencriptar la contraseña antes de asignarla
+                String contraseniaEncriptada = resultSet.getString("contrasenia");
+                String contraseniaDesencriptada = encriptar.desencriptar(contraseniaEncriptada);
+                usuario.setContrasenia(contraseniaDesencriptada);
+                
+                usuario.setTelefono(resultSet.getString("telefono"));
+                usuario.setAvatar(resultSet.getString("avatar"));
+                usuario.setDireccion(resultSet.getString("direccion"));
+                usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento"));
+                usuario.setGenero(resultSet.getString("genero").equalsIgnoreCase("masculino") ? Genero.MASCULINO : Genero.FEMENINO);
+                usuario.setTipoUsuario(resultSet.getString("tipo").equalsIgnoreCase("Admor") ? TipoUsuario.ADMOR : TipoUsuario.NORMAL);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
+
 
     private void validarUsuario(UsuarioDTO usuario) {
         if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {

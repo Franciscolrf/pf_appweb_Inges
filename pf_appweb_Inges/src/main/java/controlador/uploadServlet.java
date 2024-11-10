@@ -34,6 +34,7 @@ import modelo.TipoUsuario;
         maxRequestSize = 1024 * 1024 * 10 // 10MB
 )
 public class uploadServlet extends HttpServlet {
+    private static final String DEFAULT_AVATAR_PATH = "uploads/default.png";
     private static final String UPLOAD_DIRECTORY = "uploads";
 
     /**
@@ -74,33 +75,25 @@ public class uploadServlet extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-         // Obtención de parámetros del formulario
+        // Obtención de parámetros del formulario
         String nombreCompleto = request.getParameter("nombreCompleto");
         String correo = request.getParameter("correo");
         String contrasenia = request.getParameter("contrasenia");
         String telefono = request.getParameter("telefono");
         String fechaNacimiento = request.getParameter("fechaNacimiento");
         String genero = request.getParameter("genero");
-        String direccion = request.getParameter("direccion");  
+        String direccion = request.getParameter("direccion");
 
-        // Verificar si se ha subido un archivo de avatar
         String avatarPath = null;
-        Part filePart = null;
-        
-        try {
-            filePart = request.getPart("avatar");
-        } catch (IOException | ServletException ex) {
-            Logger.getLogger(uploadServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Part filePart = request.getPart("avatar");
 
-        if (filePart != null) {
+        if (filePart != null && filePart.getSize() > 0) {
             String fileName = getFileName(filePart);
 
-            if (fileName != null && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
-
-                // Crear el directorio de carga si no existe
+            if (fileName != null
+                    && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
                 String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
@@ -109,11 +102,7 @@ public class uploadServlet extends HttpServlet {
 
                 // Guardar el archivo en el servidor
                 avatarPath = uploadPath + File.separator + fileName;
-                try {
-                    filePart.write(avatarPath); // Guardar el archivo
-                } catch (IOException ex) {
-                    Logger.getLogger(uploadServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                filePart.write(avatarPath); // Guardar el archivo
 
                 // La ruta que se guardará en la base de datos será la ruta relativa
                 avatarPath = UPLOAD_DIRECTORY + "/" + fileName;
@@ -121,21 +110,24 @@ public class uploadServlet extends HttpServlet {
                 response.getWriter().write("El archivo debe ser PNG o JPG.");
                 return;
             }
+        } else {
+            // Asignar la ruta de imagen por defecto si no se ha subido ninguna imagen
+            avatarPath = DEFAULT_AVATAR_PATH;
         }
 
-        System.out.println("Ruta del avatar guardada en la base de datos: " + avatarPath);
+        System.out.println("Avatar path: " + avatarPath);
         // Crear DTO de usuario
         UsuarioDTO usuario = new UsuarioDTO();
         usuario.setNombreCompleto(nombreCompleto);
         usuario.setCorreo(correo);
-        
+
         // Encriptar la contraseña antes de guardarla
         try {
             usuario.setContrasenia(Encriptar.encriptar(contrasenia));
         } catch (Exception e) {
             Logger.getLogger(uploadServlet.class.getName()).log(Level.SEVERE, null, e);
         }
-        
+
         usuario.setTelefono(telefono);
         usuario.setAvatar(avatarPath);
         usuario.setFechaNacimiento(Date.valueOf(fechaNacimiento));
