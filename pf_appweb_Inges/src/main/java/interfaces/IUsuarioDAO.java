@@ -13,7 +13,7 @@ import modelo.Usuario;
  */
 public interface IUsuarioDAO {
     void registrarUsuario(UsuarioDTO usuario);
-    void modificarUsuario(Usuario usuario);
-    void eliminarUsuario(Usuario usuario);
+    boolean modificarUsuario(UsuarioDTO usuario, String nuevaContrasenia);
+    void eliminarUsuario(UsuarioDTO usuario);
     Usuario obtenerUsuario(int id);
 }

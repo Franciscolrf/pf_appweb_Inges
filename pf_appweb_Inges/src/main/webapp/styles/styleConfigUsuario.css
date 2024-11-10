@@ -1,4 +1,4 @@
-* {
+* { 
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -6,129 +6,159 @@
 }
 
 body {
-    background-color: #f0f2f5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.header {
-    width: 100%;
-    padding: 20px;
-    background-color: #343a40;
+    background-color: #333;
     color: #fff;
+}
+
+
+header {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
 }
 
-.header .user-info {
-    text-align: center;
-}
-
-.avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    border: 3px solid #fff;
-}
-
-h2 {
+header h1 {
+    align-items: center;
+    justify-content: center;
     font-size: 24px;
-    margin-top: 10px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+}
+
+header .close-btn {
+    position: absolute;
+    left: 10px;
+    font-size: 20px;
+    color: #ffffff;
+    text-decoration: none;
+}
+header .close-btn:hover {
+    color: #ffffff;
+}
+
+.close-btn {
+    position: absolute;
+    left: 20px;
+    font-size: 60px;
+    color: #fff;
+    text-decoration: none;
 }
 
 .container {
-    max-width: 600px;
-    width: 90%;
-    padding: 25px;
-    background-color: #ffffff;
-    margin-top: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.user-details {
+.user-config {
+    background-color: #444;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.avatar-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto;
+}
+
+.avatar-container p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #ccc;
+}
+
+form {
     display: flex;
     flex-direction: column;
-}
-
-.user-details h3 {
-    font-size: 20px;
-    color: #343a40;
-    margin-bottom: 15px;
-    text-align: center;
+    gap: 15px;
 }
 
 label {
-    font-weight: bold;
-    color: #343a40;
-    margin-top: 15px;
+    font-size: 14px;
+    color: #aaa;
+    text-align: left;
 }
 
 input, select {
-    width: 100%;
     padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ced4da;
-    margin-top: 5px;
-    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #666;
+    color: #fff;
+    font-size: 14px;
 }
 
-input:focus, select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+input[type="file"] {
+    display: none; 
 }
 
-.btn-save {
+.file-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #777;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.file-label:hover {
+    background-color: #888;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
     margin-top: 20px;
+}
+
+.save-btn {
     padding: 10px;
-    width: 100%;
-    background: linear-gradient(135deg, #28a745, #218838);
+    background-color: #0056b3;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    transition: background 0.3s ease-in-out;
+    width: 45%;
 }
 
-.btn-save:hover {
-    background: linear-gradient(135deg, #218838, #1d7433);
+.save-btn:hover {
+    background-color: #004494;
 }
 
-.status-message {
-    text-align: center;
-    margin-top: 20px;
+.delete-btn {
     padding: 10px;
-    color: #28a745;
-    background-color: #e9f5e9;
+    background-color: #b30000;
+    color: #fff;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 45%;
 }
 
-.status-message.error {
-    color: #dc3545;
-    background-color: #f8d7da;
+.delete-btn:hover {
+    background-color: #8b0000;
 }
 
-@media (max-width: 600px) {
-    .container {
-        padding: 20px;
-    }
-
-    .avatar {
-        width: 100px;
-        height: 100px;
-    }
-
-    h2 {
-        font-size: 20px;
-    }
-
-    .btn-save {
-        font-size: 14px;
-    }
-}

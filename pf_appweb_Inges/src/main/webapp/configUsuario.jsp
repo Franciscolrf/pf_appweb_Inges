@@ -1,38 +1,36 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="dtos.UsuarioDTO" %>
 <%
+    // Obtener el usuario de la sesión
     UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
     if (usuario == null) {
         response.sendRedirect("login.jsp");
         return;
     }
-    String status = request.getParameter("status");
 %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/configUsuarioStyle.css">
-    <script src="scripts/configUsuario.js"></script>
+    <link rel="stylesheet" href="styles/styleConfigUsuario.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <title>Configuración de Usuario</title>
 </head>
 <body>
-    <header class="header">
-        <div class="user-info">
-            <img src="<%= usuario.getAvatar() != null ? usuario.getAvatar() : "uploads/default.png" %>" alt="Avatar del usuario" class="avatar">
-            <h2><%= usuario.getNombreCompleto() %></h2>
-        </div>
-    </header>
+    <header>
+    <a href="publicaciones.jsp" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
+    <h1>Configuración de Usuario</h1>
+</header>
+
+
     <main class="container">
-        <section class="user-details">
-            <h3>Información Personal</h3>
-            <% if ("success".equals(status)) { %>
-                <div class="status-message">Cambios guardados exitosamente.</div>
-            <% } else if ("error".equals(status)) { %>
-                <div class="status-message error">Hubo un error al guardar los cambios. Inténtalo de nuevo.</div>
-            <% } %>
-            <form action="updateUsuarioServlet" method="post">
+        <section class="user-config">
+            <div class="avatar-container">
+                <img src="<%= usuario.getAvatar() != null ? usuario.getAvatar() : "uploads/default.png" %>" alt="Avatar del usuario" class="avatar">
+                <p><%= usuario.getNombreCompleto() %></p>
+            </div>
+            <form action="updateUsuarioServlet" method="post" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre Completo:</label>
                 <input type="text" id="nombreCompleto" name="nombreCompleto" value="<%= usuario.getNombreCompleto() %>" required>
 
@@ -40,7 +38,7 @@
                 <input type="email" id="correo" name="correo" value="<%= usuario.getCorreo() %>" required>
 
                 <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" value="<%= usuario.getTelefono() %>" pattern="[0-9]{10}" required>
+                <input type="text" id="telefono" name="telefono" value="<%= usuario.getTelefono() %>" required>
 
                 <label for="direccion">Dirección:</label>
                 <input type="text" id="direccion" name="direccion" value="<%= usuario.getDireccion() %>" required>
@@ -50,13 +48,34 @@
 
                 <label for="genero">Género:</label>
                 <select id="genero" name="genero" required>
-                    <option value="masculino" <%= usuario.getGenero().equals("masculino") ? "selected" : "" %>>Masculino</option>
-                    <option value="femenino" <%= usuario.getGenero().equals("femenino") ? "selected" : "" %>>Femenino</option>
+                    <option value="Masculino" <%= usuario.getGenero().equals("Masculino") ? "selected" : "" %>>Masculino</option>
+                    <option value="Femenino" <%= usuario.getGenero().equals("Femenino") ? "selected" : "" %>>Femenino</option>
                 </select>
 
-                <button type="submit" class="btn-save">Guardar Cambios</button>
+                <label for="avatar">Actualizar Avatar:</label>
+                <label for="avatar" class="file-label">
+                    <i class="fa fa-upload" aria-hidden="true"></i>
+                </label>
+                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+
+                <label for="contrasenia">Nueva Contraseña:</label>
+                <input type="password" id="contrasenia" name="contrasenia">
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">Guardar Cambios</button>
+                    <button type="button" class="delete-btn" onclick="confirmDelete()">Eliminar Cuenta</button>
+                </div>
             </form>
         </section>
     </main>
+
+    <script>
+        function confirmDelete() {
+            if (confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+                window.location.href = "deleteUserServlet"; 
+            }
+        }
+    </script>
 </body>
 </html>
+

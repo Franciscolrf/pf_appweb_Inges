@@ -33,6 +33,7 @@ public class UsuarioDAO implements IUsuarioDAO {
             // Convertir UsuarioDTO a Usuario utilizando Mapeos
             Usuario usuario = mapeos.dtoToUsuario(usuarioDTO);
 
+            validarUsuario(usuarioDTO);
             // Encriptar la contraseña antes de guardarla en la base de datos
             String contraseniaEncriptada = Encriptar.encriptar(usuario.getContrasenia());
             usuario.setContrasenia(contraseniaEncriptada);
@@ -59,30 +60,50 @@ public class UsuarioDAO implements IUsuarioDAO {
         }
     }
 
-    @Override
-    public void modificarUsuario(Usuario usuario) {
-        String sql = "UPDATE Usuarios SET nombreCompleto = ?, correo = ?, contrasenia = ?, telefono = ?, avatar = ?, fechaNacimiento = ?, genero = ?, tipo = ? WHERE id = ?";
+    public boolean modificarUsuario(UsuarioDTO usuario, String nuevaContrasenia) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        boolean actualizado = false;
 
-        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+        try {
+            conn = ConexionBD.getConnection();
+            String sql = "UPDATE Usuarios SET nombreCompleto = ?, correo = ?, telefono = ?, direccion = ?, fechaNacimiento = ?, genero = ?, avatar = ?"
+                       + (nuevaContrasenia != null && !nuevaContrasenia.isEmpty() ? ", contrasenia = ?" : "")
+                       + " WHERE id = ?";
+            
+            stmt = conn.prepareStatement(sql);
+            
+            // Establecer parámetros
+            stmt.setString(1, usuario.getNombreCompleto());
+            stmt.setString(2, usuario.getCorreo());
+            stmt.setString(3, usuario.getTelefono());
+            stmt.setString(4, usuario.getDireccion());
+            stmt.setDate(5, usuario.getFechaNacimiento()); 
+            stmt.setString(6, usuario.getGenero().name()); 
+            stmt.setString(7, usuario.getAvatar());
 
-            statement.setString(1, usuario.getNombreCompleto());
-            statement.setString(2, usuario.getCorreo());
-            statement.setString(3, usuario.getContrasenia());
-            statement.setString(4, usuario.getTelefono());
-            statement.setString(5, usuario.getAvatar());
-            statement.setDate(6, new Date(usuario.getFechaNacimiento().getTime()));
-            statement.setString(7, usuario.getGenero().name());
-            statement.setString(8, usuario.getTipoUsuario().name());
-            statement.setLong(9, usuario.getId());
+            int index = 8;
+            if (nuevaContrasenia != null && !nuevaContrasenia.isEmpty()) {
+                stmt.setString(index++, Encriptar.encriptar(nuevaContrasenia)); 
+            }
 
-            statement.executeUpdate();
-        } catch (SQLException e) {
+            stmt.setLong(index, usuario.getId()); 
+
+            // Ejecutar actualización
+            actualizado = stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
-        }
+        } 
+
+        return actualizado;
     }
 
+    
+
     @Override
-    public void eliminarUsuario(Usuario usuario) {
+    public void eliminarUsuario(UsuarioDTO usuario) {
         String sql = "DELETE FROM Usuarios WHERE id = ?";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
