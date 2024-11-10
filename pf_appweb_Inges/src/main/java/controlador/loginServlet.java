@@ -98,7 +98,7 @@ public class loginServlet extends HttpServlet {
                 // Si las credenciales son correctas, iniciar sesión y redirigir a la página principal
                 HttpSession session = request.getSession();
                 session.setAttribute("usuario", usuarioDTO);
-                response.sendRedirect("publicaciones.html");
+                response.sendRedirect("publicaciones.jsp");
             }
         } catch (Exception ex) {
             Logger.getLogger(loginServlet.class.getName()).log(Level.SEVERE, null, ex);
