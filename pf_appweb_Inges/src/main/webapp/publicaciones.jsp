@@ -31,7 +31,7 @@
                 <h3><%= usuario.getNombreCompleto() %></h3>
             </div>
             <ul class="sidebar-links">
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+                <li><a href="configUsuario.jsp"><i class="fa-solid fa-gear"></i> Configuración</a></li>
                 <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
                 <li><a href="crearPublicaciones.html" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
             </ul>
