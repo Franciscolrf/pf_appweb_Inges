@@ -17,6 +17,7 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
@@ -27,13 +28,13 @@ import modelo.TipoUsuario;
  *
  * @author Fran
  */
-
-@WebServlet(name = "uploadServlet", urlPatterns = { "/uploadServlet" })
+@WebServlet(name = "uploadServlet", urlPatterns = {"/uploadServlet"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, // 10MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
         maxRequestSize = 1024 * 1024 * 10 // 10MB
 )
 public class uploadServlet extends HttpServlet {
+
     private static final String DEFAULT_AVATAR_PATH = "uploads/default.png";
     private static final String UPLOAD_DIRECTORY = "uploads";
 
@@ -41,10 +42,10 @@ public class uploadServlet extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -55,10 +56,10 @@ public class uploadServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -69,10 +70,10 @@ public class uploadServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -107,7 +108,9 @@ public class uploadServlet extends HttpServlet {
                 // La ruta que se guardará en la base de datos será la ruta relativa
                 avatarPath = UPLOAD_DIRECTORY + "/" + fileName;
             } else {
-                response.getWriter().write("El archivo debe ser PNG o JPG.");
+                request.setAttribute("mensaje", "El archivo debe ser PNG o JPG.");
+                request.setAttribute("tipoMensaje", "error");
+                request.getRequestDispatcher("registro.jsp").forward(request, response);
                 return;
             }
         } else {
@@ -115,7 +118,6 @@ public class uploadServlet extends HttpServlet {
             avatarPath = DEFAULT_AVATAR_PATH;
         }
 
-        System.out.println("Avatar path: " + avatarPath);
         // Crear DTO de usuario
         UsuarioDTO usuario = new UsuarioDTO();
         usuario.setNombreCompleto(nombreCompleto);
@@ -137,10 +139,32 @@ public class uploadServlet extends HttpServlet {
 
         // Guardar el usuario en la base de datos
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        usuarioDAO.registrarUsuario(usuario);
+        try {
+            boolean registroExitoso = usuarioDAO.registrarUsuario(usuario);
 
-        // Redirigir al login después de un registro exitoso
-        response.sendRedirect("login.jsp");
+            if (registroExitoso) {
+                // Redirigir al login con mensaje de éxito
+                request.setAttribute("mensaje", "Usuario registrado correctamente.");
+                request.setAttribute("tipoMensaje", "success");
+                response.sendRedirect("login.jsp");
+            } else {
+                // Registro fallido genérico
+                request.setAttribute("mensaje", "No se pudo registrar el usuario. Inténtalo nuevamente.");
+                request.setAttribute("tipoMensaje", "error");
+                request.getRequestDispatcher("registro.jsp").forward(request, response);
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            // Manejar el error de correo duplicado
+            request.setAttribute("mensaje", "El correo electrónico ya está registrado. Usa otro.");
+            request.setAttribute("tipoMensaje", "error");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+        } catch (Exception e) {
+            // Manejar otros errores
+            e.printStackTrace();
+            request.setAttribute("mensaje", "Ocurrió un error inesperado. Inténtalo nuevamente.");
+            request.setAttribute("tipoMensaje", "error");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+        }
     }
 
     private String getFileName(Part part) {

@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -12,28 +13,41 @@
 <body>
     <main class="container">
         <section class="form-container">
-            <a href="login.jsp" class="login-btn">¿Ya tienes cuenta? Loguéate!</a>
+            <!-- Enlace para redirigir al login -->
+            <a href="login.jsp" class="login-btn">¿Ya tienes cuenta? ¡Loguéate!</a>
             <div class="icon-user">
                 <i class="fa fa-user" aria-hidden="true"></i>
             </div>
 
             <h1>Registro de Usuario</h1>
 
-            <form action="/pf_appweb_Inges/uploadServlet" method="post" class="register-form" enctype="multipart/form-data">
+            
+            <!-- Mostrar mensaje dinámico -->
+            <c:if test="${not empty mensaje}">
+                <div class="${tipoMensaje == 'success' ? 'alert-success' : 'alert-error'}">
+                    ${mensaje}
+                </div>
+            </c:if>
+
+            <form action="uploadServlet" method="post" class="register-form" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre completo:</label>
-                <input type="text" id="nombreCompleto" name="nombreCompleto" required pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras">
+                <input type="text" id="nombreCompleto" name="nombreCompleto" required 
+                       pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras">
 
                 <label for="correo">Correo Electrónico:</label>
-                <input type="email" id="correo" name="correo" required pattern="^[a-zA-Z0-9._%+-]+@.+$" title="El correo debe contener un @">
+                <input type="email" id="correo" name="correo" required 
+                       pattern="^[a-zA-Z0-9._%+-]+@.+$" title="El correo debe contener un @">
 
                 <label for="contrasenia">Contraseña:</label>
-                <input type="password" id="contrasenia" name="contrasenia" required minlength="8" title="Debe tener al menos 8 caracteres">
+                <input type="password" id="contrasenia" name="contrasenia" required minlength="8" 
+                       title="Debe tener al menos 8 caracteres">
 
                 <label for="confirmarContrasenia">Confirmar Contraseña:</label>
                 <input type="password" id="confirmarContrasenia" name="confirmarContrasenia" required>
 
                 <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" required pattern="[0-9]{10}" title="Solo se permiten números">
+                <input type="tel" id="telefono" name="telefono" required  maxlength="10"
+                       pattern="[0-9]{10}" title="Solo se permiten números">
 
                 <label>Avatar (Opcional):</label>
                 <label for="avatar" class="file-label">
@@ -60,7 +74,8 @@
                 </button>
             </form>
 
-            <a href="index.html">
+            <!-- Botón para volver al inicio -->
+            <a href="index.jsp">
                 <button class="exit-btn">
                     <i class="fa-solid fa-xmark"></i>
                 </button>

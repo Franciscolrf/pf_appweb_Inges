@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import interfaces.IUsuarioDAO;
+import java.sql.SQLIntegrityConstraintViolationException;
 import mapeos.Encriptar;
 import mapeos.Mapeos;
 import modelo.Genero;
@@ -28,34 +29,28 @@ public class UsuarioDAO implements IUsuarioDAO {
     Mapeos mapeos = new Mapeos();
 
     @Override
-    public void registrarUsuario(UsuarioDTO usuarioDTO) {
-        try {
-            // Convertir UsuarioDTO a Usuario utilizando Mapeos
-            Usuario usuario = mapeos.dtoToUsuario(usuarioDTO);
+    public boolean registrarUsuario(UsuarioDTO usuario) throws SQLIntegrityConstraintViolationException {
+        String sql = "INSERT INTO usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, direccion, fechaNacimiento, genero, tipo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Encriptar la contraseña antes de guardarla en la base de datos
-            String contraseniaEncriptada = Encriptar.encriptar(usuario.getContrasenia());
-            usuario.setContrasenia(contraseniaEncriptada);
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, usuario.getNombreCompleto());
+            statement.setString(2, usuario.getCorreo());
+            statement.setString(3, usuario.getContrasenia());
+            statement.setString(4, usuario.getTelefono());
+            statement.setString(5, usuario.getAvatar());
+            statement.setString(6, usuario.getDireccion());
+            statement.setDate(7, usuario.getFechaNacimiento());
+            statement.setString(8, usuario.getGenero().toString());
+            statement.setString(9, usuario.getTipoUsuario().toString());
 
-            String sql = "INSERT INTO usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, direccion, fechaNacimiento, genero, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            try (Connection connection = ConexionBD.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(sql)) {
-
-                statement.setString(1, usuario.getNombreCompleto());
-                statement.setString(2, usuario.getCorreo());
-                statement.setString(3, usuario.getContrasenia());
-                statement.setString(4, usuario.getTelefono());
-                statement.setString(5, usuario.getAvatar());
-                statement.setString(6, usuario.getDireccion()); // Guardar la dirección como un solo String
-                statement.setDate(7, new Date(usuario.getFechaNacimiento().getTime()));
-                statement.setString(8, usuario.getGenero().name());
-                statement.setString(9, usuario.getTipoUsuario().name());
-
-                statement.executeUpdate();
-            }
-        } catch (Exception e) {
+            int filasAfectadas = statement.executeUpdate();
+            return filasAfectadas > 0; // Registro exitoso
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw e; // Lanzamos la excepción para que sea manejada por el servlet
+        } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -127,8 +122,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         Usuario usuario = null;
         String sql = "SELECT * FROM usuarios WHERE correo = ?";
 
-        try (Connection connection = ConexionBD.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, correo);
             ResultSet resultSet = statement.executeQuery();
@@ -138,11 +132,11 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setId(resultSet.getLong("id"));
                 usuario.setNombreCompleto(resultSet.getString("nombreCompleto"));
                 usuario.setCorreo(resultSet.getString("correo"));
-                
+
                 String contraseniaEncriptada = resultSet.getString("contrasenia");
                 String contraseniaDesencriptada = Encriptar.desencriptar(contraseniaEncriptada);
                 usuario.setContrasenia(contraseniaDesencriptada);
-                
+
                 usuario.setTelefono(resultSet.getString("telefono"));
                 usuario.setAvatar(resultSet.getString("avatar"));
                 usuario.setDireccion(resultSet.getString("direccion"));
@@ -162,7 +156,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         if (usuario != null) {
             // Encriptar la contraseña ingresada para compararla con la almacenada
             String contraseniaIngresadaEncriptada = Encriptar.encriptar(contraseniaIngresada);
-            
+
             // Comparar la contraseña encriptada
             if (usuario.getContrasenia().equals(contraseniaIngresadaEncriptada)) {
                 // Convertir Usuario a UsuarioDTO y devolverlo
