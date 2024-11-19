@@ -32,8 +32,9 @@
             </div>
             <ul class="sidebar-links">
                 <li><a href="configUsuario.jsp"><i class="fa-solid fa-gear"></i> Configuración</a></li>
-                <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
                 <li><a href="crearPublicaciones.html" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
+                <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
+                
             </ul>
         </aside>
         <section class="content">
