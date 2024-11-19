@@ -5,6 +5,7 @@
 package daos;
 
 import java.util.Date;
+import mapeos.Encriptar;
 
 import modelo.Genero;
 import modelo.TipoUsuario;
@@ -19,8 +20,11 @@ public class test {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-    
+    public static void main(String[] args) throws Exception {
+        String crip="bBU5sydvjrSt8xuUdVdcKw==";
+        System.out.println(Encriptar.desencriptar(crip));
+             
+     
     }
 
    

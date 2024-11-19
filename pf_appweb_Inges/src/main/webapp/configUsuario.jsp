@@ -30,6 +30,13 @@
                 <img src="<%= usuario.getAvatar() != null ? usuario.getAvatar() : "uploads/default.png" %>" alt="Avatar del usuario" class="avatar">
                 <p><%= usuario.getNombreCompleto() %></p>
             </div>
+                <c:if test="${not empty mensaje}">
+                    <div class="${tipoMensaje == 'success' ? 'alert-success' : 'alert-error'}">
+                        ${mensaje}
+                    </div>
+                </c:if>
+
+
             <form action="updateUsuarioServlet" method="post" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre Completo:</label>
                 <input type="text" id="nombreCompleto" name="nombreCompleto" value="<%= usuario.getNombreCompleto() %>" required>
@@ -41,7 +48,8 @@
                 <input type="text" id="telefono" name="telefono" value="<%= usuario.getTelefono() %>" required>
 
                 <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" name="direccion" value="<%= usuario.getDireccion() %>" required>
+                <input type="text" id="direccion" name="direccion" value="<%= usuario.getDireccion()%>" required maxlength="10">
+
 
                 <label for="fechaNacimiento">Fecha de Nacimiento:</label>
                 <input type="date" id="fechaNacimiento" name="fechaNacimiento" value="<%= usuario.getFechaNacimiento() %>" required>
@@ -59,7 +67,7 @@
                 <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
 
                 <label for="contrasenia">Nueva Contraseña:</label>
-                <input type="password" id="contrasenia" name="contrasenia">
+                <input type="password" id="contrasenia" name="contrasenia" required minlength="8" title="Debe tener al menos 8 caracteres">
 
                 <div class="button-group">
                     <button type="submit" class="save-btn">Guardar Cambios</button>

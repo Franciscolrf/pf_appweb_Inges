@@ -19,7 +19,10 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.sql.Date;
+import mapeos.Encriptar;
+import mapeos.Mapeos;
 import modelo.Genero;
+import modelo.Usuario;
 
 /**
  *
@@ -82,22 +85,72 @@ private static final String UPLOAD_DIRECTORY = "uploads";
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        String mensaje = "Cambios realizados con éxito.";
         UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
+        boolean nombreActualizado= false, correoActualizado= false, telefonoActualizado= false, direccionActualizado = false, contraseñaActualizada=false;
 
         if (usuario == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
+        // Obtener valores actuales del usuario de la base de datos
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        Usuario usuarioActualizado = usuarioDAO.obtenerUsuario(usuario.getId().intValue());
+
         // Obtener datos del formulario
-        String nombreCompleto = request.getParameter("nombreCompleto");
-        String correo = request.getParameter("correo");
-        String telefono = request.getParameter("telefono");
-        String direccion = request.getParameter("direccion");
-        
-        Date fechaNacimiento = Date.valueOf(request.getParameter("fechaNacimiento"));
-        Genero genero = Genero.valueOf(request.getParameter("genero").toUpperCase());
-        String nuevaContrasenia = request.getParameter("contrasenia");
+        String nombreCompletoFormulario = request.getParameter("nombreCompleto");
+        if (nombreCompletoFormulario != null && !nombreCompletoFormulario.trim().isEmpty()
+                && (usuarioActualizado.getNombreCompleto() == null
+                || !usuarioActualizado.getNombreCompleto().equals(nombreCompletoFormulario))) {
+            usuario.setNombreCompleto(nombreCompletoFormulario);
+             nombreActualizado = true;
+        }
+
+        String correoFormulario = request.getParameter("correo");
+        if (correoFormulario != null && !correoFormulario.trim().isEmpty()
+                && (usuarioActualizado.getCorreo() == null
+                || !usuarioActualizado.getCorreo().equals(correoFormulario))) {
+            usuario.setCorreo(correoFormulario);
+             correoActualizado = true;
+        }
+
+        String telefonoFormulario = request.getParameter("telefono");
+
+        if (telefonoFormulario != null && !telefonoFormulario.trim().isEmpty()) {
+            telefonoFormulario = telefonoFormulario.trim(); // Normaliza eliminando espacios extra
+
+            // Comprueba si el teléfono actual es diferente al proporcionado
+            if (usuarioActualizado.getTelefono() == null
+                    || !usuarioActualizado.getTelefono().trim().equals(telefonoFormulario)) {
+
+                usuario.setTelefono(telefonoFormulario);
+                telefonoActualizado = true;
+            }
+        }
+
+        String direccionFormulario = request.getParameter("direccion");
+        if (direccionFormulario != null && !direccionFormulario.trim().isEmpty()
+                && (usuarioActualizado.getDireccion() == null
+                || !usuarioActualizado.getDireccion().equals(direccionFormulario))) {
+            usuario.setDireccion(direccionFormulario);
+             direccionActualizado = true;
+        }
+
+
+        String fechaNacimientoFormulario = request.getParameter("fechaNacimiento");
+        if (fechaNacimientoFormulario != null && !fechaNacimientoFormulario.isEmpty()
+                && (usuarioActualizado.getFechaNacimiento() == null
+                || !usuarioActualizado.getFechaNacimiento().equals(Date.valueOf(fechaNacimientoFormulario)))) {
+            usuario.setFechaNacimiento(Date.valueOf(fechaNacimientoFormulario));
+        }
+
+        String generoFormulario = request.getParameter("genero");
+        if (generoFormulario != null && !generoFormulario.trim().isEmpty()
+                && (usuarioActualizado.getGenero() == null
+                || !usuarioActualizado.getGenero().equals(Genero.valueOf(generoFormulario.toUpperCase())))) {
+            usuario.setGenero(Genero.valueOf(generoFormulario.toUpperCase()));
+        }
 
         Part avatarPart = request.getPart("avatar");
         String avatarPath = null;
@@ -105,31 +158,81 @@ private static final String UPLOAD_DIRECTORY = "uploads";
             String fileName = avatarPart.getSubmittedFileName();
             String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
             File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdir();
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
             avatarPath = "uploads/" + fileName;
             avatarPart.write(uploadPath + File.separator + fileName);
+
+            if (usuarioActualizado.getAvatar() == null || !avatarPath.equals(usuarioActualizado.getAvatar())) {
+                usuario.setAvatar(avatarPath);
+            }
+        } else {
+            usuario.setAvatar(usuarioActualizado.getAvatar());
         }
 
-        // Actualizar objeto usuario
-        usuario.setNombreCompleto(nombreCompleto);
-        usuario.setCorreo(correo);
-        usuario.setTelefono(telefono);
-        usuario.setDireccion(direccion);
-        usuario.setFechaNacimiento(fechaNacimiento);
-        usuario.setGenero(genero);
-        usuario.setAvatar(avatarPath); // Actualizar avatar
+        // Nueva contraseña solo si el campo no está vacío
+        String nuevaContrasenia = request.getParameter("contrasenia");
+        if (nuevaContrasenia != null && !nuevaContrasenia.trim().isEmpty()) {
+            try {
+                usuario.setContrasenia(nuevaContrasenia);
+                contraseñaActualizada =true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // Llamar al método modificarUsuario en UsuarioDAO
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
         boolean actualizado = usuarioDAO.modificarUsuario(usuario, nuevaContrasenia);
 
+        // Configuración del mensaje de respuesta
+        
+              if (nombreActualizado == true) {
+            mensaje += " Nombre actualizado.";
+        }
+        if (correoActualizado == true) {
+            mensaje += " Correo actualizado.";
+        }
+        if (telefonoActualizado == true) {
+            mensaje += " Teléfono actualizado.";
+        }
+        if (direccionActualizado == true) {
+            mensaje += " Dirección actualizada.";
+        }
+        if (usuarioActualizado.getFechaNacimiento() == null
+                || !usuarioActualizado.getFechaNacimiento().equals(usuario.getFechaNacimiento())) {
+            mensaje += " Fecha de nacimiento actualizada.";
+        }
+        if (usuarioActualizado.getGenero() == null
+                || !usuarioActualizado.getGenero().equals(usuario.getGenero())) {
+            mensaje += " Género actualizado.";
+        }
+        if (usuarioActualizado.getAvatar() == null
+                || !usuarioActualizado.getAvatar().equals(usuario.getAvatar())) {
+            mensaje += " Avatar actualizado.";
+        }
+
+        if (contraseñaActualizada = true) {
+            mensaje += " Contraseña actualizada.";
+        }
+
+        
+
+        // Enviar mensaje al JSP
         if (actualizado) {
             session.setAttribute("usuario", usuario); // Actualizar el usuario en sesión
-            response.sendRedirect("configUsuario.jsp?status=success");
+            request.setAttribute("mensaje", mensaje);
+            request.setAttribute("tipoMensaje", "success");
         } else {
-            response.sendRedirect("configUsuario.jsp?status=error");
+            request.setAttribute("mensaje", "Error al realizar los cambios.");
+            request.setAttribute("tipoMensaje", "error");
         }
+
+        request.getRequestDispatcher("configUsuario.jsp").forward(request, response);
     }
+
+
+
 
     /**
      * Returns a short description of the servlet.

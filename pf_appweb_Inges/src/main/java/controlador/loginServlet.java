@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
-import modelo.Usuario;
 
 /**
  *
