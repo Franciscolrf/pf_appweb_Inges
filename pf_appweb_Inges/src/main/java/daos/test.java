@@ -21,7 +21,7 @@ public class test {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        String crip="bBU5sydvjrSt8xuUdVdcKw==";
+        String crip="K1KIVAgwhYeLdhgozt8TGw==";
         System.out.println(Encriptar.desencriptar(crip));
              
      

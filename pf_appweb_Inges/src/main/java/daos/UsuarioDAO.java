@@ -28,7 +28,6 @@ public class UsuarioDAO implements IUsuarioDAO {
     Encriptar encriptar = new Encriptar();
     Mapeos mapeos = new Mapeos();
 
-
     @Override
     public boolean registrarUsuario(UsuarioDTO usuario) throws SQLIntegrityConstraintViolationException {
         String sql = "INSERT INTO usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, direccion, fechaNacimiento, genero, tipo) "
@@ -96,15 +95,17 @@ public class UsuarioDAO implements IUsuarioDAO {
     }
 
     @Override
-    public void eliminarUsuario(UsuarioDTO usuario) {
-        String sql = "DELETE FROM Usuarios WHERE id = ?";
-
+    public boolean eliminarUsuario(long idUsuario) {
+        String sql = "DELETE FROM usuarios WHERE id = ?";
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setLong(1, usuario.getId());
-            statement.executeUpdate();
+            statement.setLong(1, idUsuario);
+            int filasAfectadas = statement.executeUpdate();
+
+            return filasAfectadas > 0; // Devuelve true si se eliminó al menos un registro
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
