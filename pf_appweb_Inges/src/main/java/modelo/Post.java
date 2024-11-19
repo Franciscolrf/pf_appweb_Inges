@@ -24,9 +24,9 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String titulo;
     private String contenido;
+    private boolean anclado;
     private Date fechaHoraCreacion;
     private Date fechaHoraEdicion;
 
@@ -60,8 +60,17 @@ public class Post implements Serializable {
         this.fechaHoraEdicion = fechaHoraEdicion;
     }
 
-    
+    public boolean isAnclado() {
+        return anclado;
+    }
 
+    public void setAnclado(boolean anclado) {
+        this.anclado = anclado;
+    }
+
+    
+    
+    
     public String getTitulo() {
         return titulo;
     }

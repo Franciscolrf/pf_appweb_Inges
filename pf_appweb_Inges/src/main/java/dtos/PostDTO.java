@@ -14,6 +14,7 @@ public class PostDTO {
     private Long id;
     private String titulo;
     private String contenido;
+    private boolean anclado;
     private Date fechaHoraCreacion;
     private Date fechaHoraEdicion;
     private UsuarioDTO usuario;
@@ -23,6 +24,14 @@ public class PostDTO {
 
     public Long getId() {
         return id;
+    }
+    
+    public boolean isAnclado() {
+        return anclado;
+    }
+
+    public void setAnclado(boolean anclado) {
+        this.anclado = anclado;
     }
 
     public void setId(Long id) {

@@ -41,7 +41,7 @@
                 </form>
 
                 <div class="register-prompt">
-                    <p>¿No tienes cuenta? <a href="registro.html" class="register-link">Regístrate!!!</a></p>
+                    <p>¿No tienes cuenta? <a href="registro.jsp" class="register-link">Regístrate!!!</a></p>
                 </div>
 
                 <a href="index.html">

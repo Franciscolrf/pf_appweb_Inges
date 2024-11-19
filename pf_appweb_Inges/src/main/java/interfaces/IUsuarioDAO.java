@@ -5,6 +5,7 @@
 package interfaces;
 
 import dtos.UsuarioDTO;
+import java.sql.SQLIntegrityConstraintViolationException;
 import modelo.Usuario;
 
 /**
@@ -12,8 +13,9 @@ import modelo.Usuario;
  * @author Fran
  */
 public interface IUsuarioDAO {
-    void registrarUsuario(UsuarioDTO usuario);
+
     boolean modificarUsuario(UsuarioDTO usuario, String nuevaContrasenia);
     void eliminarUsuario(UsuarioDTO usuario);
+    boolean registrarUsuario(UsuarioDTO usuario)throws SQLIntegrityConstraintViolationException;
     Usuario obtenerUsuario(int id);
 }
