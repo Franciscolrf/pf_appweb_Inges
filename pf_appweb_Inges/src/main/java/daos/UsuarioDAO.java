@@ -127,6 +127,7 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setTelefono(resultSet.getString("telefono"));
                 usuario.setDireccion(resultSet.getString("direccion"));
                 usuario.setAvatar(resultSet.getString("avatar"));
+                usuario.setContrasenia(resultSet.getString("contrasenia"));
                 usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento"));
                 usuario.setGenero(mapeos.stringToGenero(resultSet.getString("genero")));
                 usuario.setTipoUsuario(mapeos.stringToTipoUsuario(resultSet.getString("tipo")));

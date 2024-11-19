@@ -39,7 +39,7 @@
 
             <form action="updateUsuarioServlet" method="post" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre Completo:</label>
-                <input type="text" id="nombreCompleto" name="nombreCompleto" value="<%= usuario.getNombreCompleto() %>" required>
+                <input type="text" id="nombreCompleto" name="nombreCompleto" value="<%= usuario.getNombreCompleto() %>" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" required>
 
                 <label for="correo">Correo Electrónico:</label>
                 <input type="email" id="correo" name="correo" value="<%= usuario.getCorreo() %>" required>
@@ -67,7 +67,7 @@
                 <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
 
                 <label for="contrasenia">Nueva Contraseña:</label>
-                <input type="password" id="contrasenia" name="contrasenia" required minlength="8" title="Debe tener al menos 8 caracteres">
+                <input type="password" id="contrasenia" name="contrasenia"  minlength="8" title="Debe tener al menos 8 caracteres">
 
                 <div class="button-group">
                     <button type="submit" class="save-btn">Guardar Cambios</button>

@@ -19,6 +19,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.sql.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mapeos.Encriptar;
 import mapeos.Mapeos;
 import modelo.Genero;
@@ -31,6 +33,7 @@ import modelo.Usuario;
 @WebServlet(name = "updateUsuarioServlet", urlPatterns = {"/updateUsuarioServlet"})
 @MultipartConfig
 public class updateUsuarioServlet extends HttpServlet {
+    
 private static final String UPLOAD_DIRECTORY = "uploads";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -173,10 +176,20 @@ private static final String UPLOAD_DIRECTORY = "uploads";
 
         // Nueva contraseña solo si el campo no está vacío
         String nuevaContrasenia = request.getParameter("contrasenia");
+        Encriptar enc = new Encriptar();
+        String contraseniaFormularioEncriptada = null;
+        String contraseniaUser = usuarioActualizado.getContrasenia();
         if (nuevaContrasenia != null && !nuevaContrasenia.trim().isEmpty()) {
             try {
-                usuario.setContrasenia(nuevaContrasenia);
-                contraseñaActualizada =true;
+                contraseniaFormularioEncriptada = Encriptar.encriptar(nuevaContrasenia);
+            } catch (Exception ex) {
+                Logger.getLogger(updateUsuarioServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if (!contraseniaFormularioEncriptada.equals(contraseniaUser)) {
+                    usuario.setContrasenia(nuevaContrasenia);
+                    contraseñaActualizada =true;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
