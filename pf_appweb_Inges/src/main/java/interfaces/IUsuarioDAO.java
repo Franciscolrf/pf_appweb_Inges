@@ -13,8 +13,9 @@ import modelo.Usuario;
  * @author Fran
  */
 public interface IUsuarioDAO {
+
+    boolean modificarUsuario(UsuarioDTO usuario, String nuevaContrasenia);
+    void eliminarUsuario(UsuarioDTO usuario);
     boolean registrarUsuario(UsuarioDTO usuario)throws SQLIntegrityConstraintViolationException;
-    void modificarUsuario(Usuario usuario);
-    void eliminarUsuario(Usuario usuario);
     Usuario obtenerUsuario(int id);
 }
