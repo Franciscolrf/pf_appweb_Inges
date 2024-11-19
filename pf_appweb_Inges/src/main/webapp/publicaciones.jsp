@@ -29,12 +29,19 @@
             <div class="user-info">
                 <img src="<%= usuario.getAvatar() != null ? usuario.getAvatar() : "uploads/default.png" %>" alt="Avatar del usuario" class="avatar">
                 <h3><%= usuario.getNombreCompleto() %></h3>
+                <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
+                    <p style="color: red; font-weight: bold;">Administrador</p>
+                <% } %>
             </div>
             <ul class="sidebar-links">
                 <li><a href="configUsuario.jsp"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+                
+                    <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
+                        <li><a href="crearPublicacionesAncladas.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a> </li>
+                    <% } %>
+                
                 <li><a href="crearPublicaciones.html" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
                 <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
-                
             </ul>
         </aside>
         <section class="content">
@@ -59,7 +66,10 @@
                         <h3>El regreso de Stranger Things</h3>
                         <p>La serie regresa con nuevas aventuras en su próxima temporada.</p>
                         <div class="post-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
+                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
+                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
+                                <button class="delete-btn"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                            <% } %>
                         </div>
                         <div class="comments">
                             <h4>Comentarios:</h4>
@@ -78,7 +88,10 @@
                         <h3>Las mejores series de comedia</h3>
                         <p>Una lista de las series de comedia más divertidas para disfrutar.</p>
                         <div class="post-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
+                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
+                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
+                                <button class="delete-btn"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                            <% } %>
                         </div>
                         <div class="comments">
                             <h4>Comentarios:</h4>
