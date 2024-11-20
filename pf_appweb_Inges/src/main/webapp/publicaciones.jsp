@@ -37,7 +37,7 @@
                 <li><a href="configUsuario.jsp"><i class="fa-solid fa-gear"></i> Configuración</a></li>
                 
                     <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                        <li><a href="crearPublicacionesAncladas.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a> </li>
+                        <li><a href="crearPublicacionAnclada.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a> </li>
                     <% } %>
                 
                 <li><a href="crearPublicaciones.jsp" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
