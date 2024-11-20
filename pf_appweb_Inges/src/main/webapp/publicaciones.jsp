@@ -147,6 +147,10 @@
                 window.location.href = "deleteCommentServlet?comentarioId=" + encodeURIComponent(comentarioId);
             }
         }
+        
+        function editarPost(postId) {
+        window.location.href = "editPostServlet?postId=" + encodeURIComponent(postId);
+    }
     </script>
 </body>
 </html>
