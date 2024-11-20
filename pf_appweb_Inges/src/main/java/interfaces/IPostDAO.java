@@ -16,7 +16,7 @@ public interface IPostDAO {
     
     boolean agregarPost(PostDTO post);
     void modificarPost(PostDTO post);
-    void eliminarPost(PostDTO post);
+    boolean eliminarPost(long postId);
     public PostDTO obtenerPostPorId(long postId);
     public List<PostDTO> obtenerTodasLasPublicaciones();
     public List<PostDTO> obtenerPublicacionesAncladas();
