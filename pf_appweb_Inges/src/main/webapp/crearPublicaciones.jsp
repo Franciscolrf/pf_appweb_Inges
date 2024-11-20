@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="dtos.UsuarioDTO" %>
 <%
-    // Verificar si el usuario está en sesión
+    // Obtener el usuario de la sesión
     UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
     if (usuario == null) {
         response.sendRedirect("login.jsp");
@@ -27,7 +27,7 @@
     <main class="container">
         <section class="form-container">
             <h2>¡Comparte tus ideas!</h2>
-            <form action="crearPostServlet" method="POST">
+            <form action="createPostServlet" method="POST">
                 <div class="form-group">
                     <label for="titulo">Título</label>
                     <input type="text" id="titulo" name="titulo" placeholder="Título de la publicación" required>
@@ -36,12 +36,6 @@
                     <label for="contenido">Contenido</label>
                     <textarea id="contenido" name="contenido" rows="8" placeholder="Escribe aquí el contenido..." required></textarea>
                 </div>
-                <% if (usuario.getTipoUsuario().toString().equals("Admor")) { %>
-                    <div class="form-group">
-                        <label for="anclado">¿Publicación anclada?</label>
-                        <input type="checkbox" id="anclado" name="anclado">
-                    </div>
-                <% } %>
                 <div class="form-group">
                     <button type="submit" class="submit-btn"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
                 </div>
