@@ -1,8 +1,3 @@
-![Proyecto Final Aplicaciones Web](https://github.com/user-attachments/assets/d90a123e-7ff3-4bd7-8736-a827422bbc70)
-
-
-
-
 ## Instituto Tecnológico de Sonora (ITSON)
 
 - Francisco de Jesús López Ruiz
@@ -15,9 +10,13 @@ https://www.figma.com/proto/wkmOIWj5onEtfV4r4746H5/App-web?node-id=0-1&t=i3juoZn
 
 **Proyecto Final**
 
-Utilizando estilos CSS y lenguaje HTML.
+Utilizando estilos CSS, HTML, JAVA y JavaScript.
 
 ---
 ## Creado en
 
-![image](https://github.com/user-attachments/assets/48b85af6-ab5a-4e0a-92ff-85088d7c5797)
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+  <img src="https://github.com/user-attachments/assets/b8e8f33c-a2cf-4ff4-9e95-522d42508bc6" alt="CSSJSHTML" width="200" height="100">
+  <img src="https://github.com/user-attachments/assets/2c4987f2-2c2b-42ce-9aa9-bbc7e9bb97e2" alt="Java" width="100">
+
+</div>
