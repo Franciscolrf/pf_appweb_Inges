@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import daos.PostDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -57,8 +58,29 @@ public class deletePostServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String postIdParam = request.getParameter("postId");
+
+        try {
+            if (postIdParam != null) {
+                long postId = Long.parseLong(postIdParam);
+                PostDAO postDAO = new PostDAO();
+
+                boolean isDeleted = postDAO.eliminarPost(postId);
+
+                if (isDeleted) {
+                    response.sendRedirect("PublicacionesServlet");
+                } else {
+                    response.sendRedirect("PublicacionesServlet?error=notFound");
+                }
+            } else {
+                response.sendRedirect("PublicacionesServlet?error=invalidId");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("PublicacionesServlet?error=internalError");
+        }
     }
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.

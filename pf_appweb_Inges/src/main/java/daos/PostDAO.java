@@ -47,8 +47,16 @@ public class PostDAO implements IPostDAO {
     }
 
     @Override
-    public void eliminarPost(PostDTO post) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean eliminarPost(long postId) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, postId);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0; // Devuelve true si se eliminó
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
