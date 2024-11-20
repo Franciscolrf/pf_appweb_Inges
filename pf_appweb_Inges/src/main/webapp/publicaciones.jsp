@@ -40,7 +40,7 @@
                         <li><a href="crearPublicacionesAncladas.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a> </li>
                     <% } %>
                 
-                <li><a href="crearPublicaciones.html" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
+                <li><a href="crearPublicaciones.jsp" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
                 <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
             </ul>
         </aside>
