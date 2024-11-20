@@ -92,12 +92,20 @@
                                 <h3><%= post.getTitulo()%></h3>
                                 <p><%= post.getContenido()%></p>
                                 <div class="post-actions">
-                                    <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
+                                    <%
+                                        // Verificar si el usuario es administrador
+                                        if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {
+                                    %>
                                     <button class="delete-btn" onclick="eliminarPost(<%= post.getId()%>)"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                                    <% } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) {%>
+                                    <%
+                                        // Verificar si el usuario es normal y es el propietario de la publicación
+                                    } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal") && usuario.getId().equals(post.getUsuario().getId())) {
+                                    %>
                                     <button class="edit-btn" onclick="editarPost(<%= post.getId()%>)"><i class="fa-solid fa-pencil"></i> Editar</button>
                                     <% } %>
                                 </div>
+                            </div>
+
 
                                 <!-- Comentarios -->
                                 <div class="comments">
