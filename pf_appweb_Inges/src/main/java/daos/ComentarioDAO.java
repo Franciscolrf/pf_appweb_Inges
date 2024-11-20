@@ -23,9 +23,23 @@ import modelo.Usuario;
 public class ComentarioDAO implements IComentarioDAO{
 
     @Override
-    public void agregarComentario(Comentario comentario) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'agregarComentario'");
+    public boolean agregarComentario(ComentarioDTO comentario) {
+       String sql = "INSERT INTO comentarios (contenido, usuario_id, post_id, fechaHora) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = ConexionBD.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, comentario.getContenido());
+            statement.setLong(2, comentario.getUsuario().getId());
+            statement.setLong(3, comentario.getPost().getId());
+            statement.setTimestamp(4, new java.sql.Timestamp(new java.util.Date().getTime()));
+
+            int filasAfectadas = statement.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

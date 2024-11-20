@@ -14,7 +14,7 @@ import modelo.Comentario;
  */
 public interface IComentarioDAO {
     
-    void agregarComentario(Comentario comentario);
+    boolean agregarComentario(ComentarioDTO comentario);
     void eliminarComentario(Comentario comentario);
     void modificarComentario(Comentario comentario);
     public List<ComentarioDTO> obtenerComentariosPorPublicacion(long postId);

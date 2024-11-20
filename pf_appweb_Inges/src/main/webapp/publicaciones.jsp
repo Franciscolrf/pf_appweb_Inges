@@ -1,8 +1,8 @@
-<%@page import="dtos.UsuarioDTO"%>
-<%@page import="dtos.PostDTO"%>
-<%@page import="dtos.ComentarioDTO"%>
-<%@page import="java.util.List"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="dtos.UsuarioDTO" %>
+<%@ page import="dtos.PostDTO" %>
+<%@ page import="dtos.ComentarioDTO" %>
+<%@ page import="java.util.List" %>
 
 <%
     // Obtener el usuario de la sesión
@@ -94,21 +94,37 @@
                                     <% } %>
                                 </div>
 
-                                <!-- Comentarios -->
-                                <div class="comments">
-                                    <h4>Comentarios:</h4>
-                                    <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) {
-                                        for (ComentarioDTO comentario : post.getComentarios()) { %>
-                                            <div class="comment">
-                                                <p><%= comentario.getContenido() %></p>
-                                                <span class="comment-time"><%= comentario.getFechaHora() %></span>
-                                            </div>
-                                        <% }
-                                    } else { %>
+                                    <!-- Comentarios -->
+                                    <div class="comments">
+                                        <% if (!post.isAnclado()) { %> <!-- Verifica si la publicación no está anclada -->
+                                        <h4>Comentarios:</h4>
+                                        <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) { %>
+                                        <% for (ComentarioDTO comentario : post.getComentarios()) {%>
+                                        <div class="comment">
+                                            <p><%= comentario.getContenido()%></p>
+                                            <span class="comment-time"><%= comentario.getFechaHora()%></span>
+                                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
+                                            <button class="delete-btn" onclick="eliminarComentario(<%= comentario.getId()%>)">
+                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                            </button>
+                                            <% } %>
+                                        </div>
+                                        <% } %>
+                                        <% } else { %>
                                         <p>No hay comentarios en esta publicación.</p>
-                                    <% } %>
-                                </div>
+                                        <% } %>
+                                        <% } %>
+                                    </div>
 
+
+                                <!-- Formulario para agregar comentarios -->
+                                <% if (!post.isAnclado() && usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) { %>
+                                    <form action="comentarioServlet" method="post" class="comment-form">
+                                        <input type="hidden" name="postId" value="<%= post.getId() %>">
+                                        <textarea name="contenido" placeholder="Escribe tu comentario aquí..." required></textarea>
+                                        <button type="submit" class="add-comment-btn"><i class="fa-solid fa-paper-plane"></i> Agregar comentario</button>
+                                    </form>
+                                <% } %>
                             </div>
                         <% }
                     } else { %>
@@ -118,5 +134,19 @@
             </section>
         </section>
     </main>
+
+    <script>
+        function eliminarPost(postId) {
+            if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
+                window.location.href = "deletePostServlet?postId=" + encodeURIComponent(postId);
+            }
+        }
+
+        function eliminarComentario(comentarioId) {
+            if (confirm("¿Estás seguro de que deseas eliminar este comentario?")) {
+                window.location.href = "deleteCommentServlet?comentarioId=" + encodeURIComponent(comentarioId);
+            }
+        }
+    </script>
 </body>
 </html>

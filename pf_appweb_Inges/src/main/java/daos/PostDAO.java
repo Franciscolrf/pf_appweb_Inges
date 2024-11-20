@@ -25,12 +25,6 @@ import modelo.Usuario;
 public class PostDAO implements IPostDAO {
 
     @Override
-    public Post consultarPost(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'consultarPost'");
-    }
-
-    @Override
     public boolean agregarPost(PostDTO post) {
         String sql = "INSERT INTO posts (titulo, contenido, anclado, usuario_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -128,6 +122,47 @@ public class PostDAO implements IPostDAO {
         }
 
         return publicacionesAncladasDTO;
+    }
+
+    @Override
+    public PostDTO obtenerPostPorId(long postId) {
+        String sql = "SELECT * FROM posts WHERE id = ?";
+        PostDTO postDTO = null;
+
+        try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setLong(1, postId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Mapear los datos del post
+                Post post = new Post();
+                post.setId(resultSet.getLong("id"));
+                post.setTitulo(resultSet.getString("titulo"));
+                post.setContenido(resultSet.getString("contenido"));
+                post.setAnclado(resultSet.getBoolean("anclado"));
+                post.setFechaHoraCreacion(resultSet.getTimestamp("fechaHoraCreacion"));
+                post.setFechaHoraEdicion(resultSet.getTimestamp("fechaHoraEdicion"));
+
+                // Obtener el usuario (autor del post)
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+                Usuario usuario = usuarioDAO.obtenerUsuario(resultSet.getInt("usuario_id"));
+                post.setUsuario(usuario);
+
+                // Mapear los comentarios relacionados con el post
+                ComentarioDAO comentarioDAO = new ComentarioDAO();
+                List<ComentarioDTO> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
+
+                // Convertir el post a DTO
+                Mapeos mapeos = new Mapeos();
+                postDTO = mapeos.entidadToDTO(post);
+                postDTO.setComentarios(comentarios); // Asociar los comentarios
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return postDTO;
     }
 
 }
