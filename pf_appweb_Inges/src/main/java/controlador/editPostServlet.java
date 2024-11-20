@@ -81,7 +81,6 @@ public class editPostServlet extends HttpServlet {
             response.sendRedirect("PublicacionesServlet?error=internalError");
         }
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -94,43 +93,42 @@ public class editPostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       String idParam = request.getParameter("id");
+        String idParam = request.getParameter("postId");
         String titulo = request.getParameter("titulo");
         String contenido = request.getParameter("contenido");
-        String ancladoParam = request.getParameter("anclado");
 
         try {
-            if (idParam != null && titulo != null && contenido != null) {
-                long id = Long.parseLong(idParam);
-                boolean anclado = ancladoParam != null;
-
-                PostDAO postDAO = new PostDAO();
-                PostDTO postDTO = new PostDTO();
-                postDTO.setId(id);
-                postDTO.setTitulo(titulo);
-                postDTO.setContenido(contenido);
-                postDTO.setAnclado(anclado);
-
-                if (postDTO.isAnclado()) {
-                    // No permitir edición para publicaciones ancladas
-                    response.sendRedirect("editarPublicacion.jsp?postId=" + postDTO.getId() + "&error=notEditable");
-                    return;
-                }
-                boolean isUpdated = postDAO.modificarPost(postDTO);
-
-                if (isUpdated) {
-                    response.sendRedirect("PublicacionesServlet?success=postUpdated");
-                } else {
-                    response.sendRedirect("PublicacionesServlet?error=updateFailed");
-                }
-            } else {
+            // Validar que todos los parámetros están presentes
+            if (idParam == null || titulo == null || contenido == null) {
                 response.sendRedirect("PublicacionesServlet?error=missingParameters");
+                return;
+            }
+
+            long id = Long.parseLong(idParam);
+
+            PostDAO postDAO = new PostDAO();
+            PostDTO postDTO = postDAO.obtenerPostPorId(id);
+
+            if (postDTO.isAnclado()) {
+                response.sendRedirect("editarPublicacion.jsp?postId=" + postDTO.getId() + "&error=notEditable");
+                return;
+            }
+
+            postDTO.setTitulo(titulo);
+            postDTO.setContenido(contenido);
+
+            boolean isUpdated = postDAO.modificarPost(postDTO);
+
+            if (isUpdated) {
+                response.sendRedirect("PublicacionesServlet?success=postUpdated");
+            } else {
+                response.sendRedirect("PublicacionesServlet?error=updateFailed");
             }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("PublicacionesServlet?error=internalError");
         }
-    
+
     }
 
     /**

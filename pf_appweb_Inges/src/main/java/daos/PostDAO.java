@@ -43,12 +43,13 @@ public class PostDAO implements IPostDAO {
 
     @Override
     public boolean modificarPost(PostDTO post) {
-        String sql = "UPDATE posts SET titulo = ?, contenido = ?, anclado = ? WHERE id = ?";
+        String sql = "UPDATE posts SET titulo = ?, contenido = ? WHERE id = ?";
+
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, post.getTitulo());
             statement.setString(2, post.getContenido());
-            statement.setBoolean(3, post.isAnclado());
-            statement.setLong(4, post.getId());
+            statement.setLong(3, post.getId());
+
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
