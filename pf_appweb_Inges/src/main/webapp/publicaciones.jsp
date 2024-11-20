@@ -29,81 +29,98 @@
             <div class="user-info">
                 <img src="<%= usuario.getAvatar() != null ? usuario.getAvatar() : "uploads/default.png" %>" alt="Avatar del usuario" class="avatar">
                 <h3><%= usuario.getNombreCompleto() %></h3>
-                <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                    <p style="color: red; font-weight: bold;">Administrador</p>
-                <% } %>
+                <c:if test="${usuario.tipoUsuario == 'Admor'}">
+                    <span class="admin-tag">Administrador</span>
+                </c:if>
             </div>
             <ul class="sidebar-links">
                 <li><a href="configUsuario.jsp"><i class="fa-solid fa-gear"></i> Configuración</a></li>
-                
-                    <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                        <li><a href="crearPublicacionAnclada.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a> </li>
-                    <% } %>
-                
+                <c:if test="${usuario.tipoUsuario == 'Admor'}">
+                    <li><a href="crearPublicacionAnclada.jsp" class="create-btn"><i class="fa-solid fa-thumbtack"></i> Crear publicación anclada</a></li>
+                </c:if>
                 <li><a href="crearPublicaciones.jsp" class="create-btn"><i class="fa-solid fa-plus"></i> Crear publicación</a></li>
-                <li><a href="logoutServlet"><i class="fa-solid fa-xmark"></i> Cerrar Sesión</a></li>
+                <li><a href="logoutServlet"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</a></li>
             </ul>
         </aside>
         <section class="content">
+            <!-- Publicaciones Ancladas -->
             <section class="pinned-posts">
                 <h2>Publicaciones Ancladas</h2>
                 <div class="post-container">
-                    <div class="post">
-                        <h3>¿Cuál es tu serie favorita de todos los tiempos?</h3>
-                        <p>Comparte con nosotros tus recomendaciones de series que no te puedes perder.</p>
-                    </div>
-                    <div class="post">
-                        <h3>La mejor serie del 2024</h3>
-                        <p>¿Qué serie crees que marcará el 2024? Cuéntanos tu opinión.</p>
-                    </div>
+                    <c:forEach var="post" items="${anclados}">
+                        <div class="post">
+                            <h3>${post.titulo}</h3>
+                            <p>${post.contenido}</p>
+                            <c:if test="${usuario.tipoUsuario == 'Admor'}">
+                                <div class="post-actions">
+                                    <button class="delete-btn" onclick="eliminarPost(${post.id})"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                                </div>
+                            </c:if>
+                        </div>
+                    </c:forEach>
                 </div>
             </section>
 
+            <!-- Publicaciones Recientes -->
             <section class="published-posts">
                 <h2>Publicaciones Recientes</h2>
                 <div class="post-container">
-                    <div class="post">
-                        <h3>El regreso de Stranger Things</h3>
-                        <p>La serie regresa con nuevas aventuras en su próxima temporada.</p>
-                        <div class="post-actions">
-                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
-                                <button class="delete-btn"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                            <% } %>
-                        </div>
-                        <div class="comments">
-                            <h4>Comentarios:</h4>
-                            <div class="comment">
-                                <p>¡Estoy tan emocionado por el regreso! 👏</p>
-                                <span class="comment-time">Hace 2 horas</span>
-                            </div>
-                            <div class="comment">
-                                <p>Siempre amé esta serie, no puedo esperar a verla.</p>
-                                <span class="comment-time">Hace 1 hora</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="post">
-                        <h3>Las mejores series de comedia</h3>
-                        <p>Una lista de las series de comedia más divertidas para disfrutar.</p>
-                        <div class="post-actions">
-                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                                <button class="edit-btn"><i class="fa-solid fa-pencil"></i> Editar</button>
-                                <button class="delete-btn"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                            <% } %>
-                        </div>
-                        <div class="comments">
-                            <h4>Comentarios:</h4>
-                            <div class="comment">
-                                <p>¡Me encanta "Brooklyn Nine-Nine"! 😂</p>
-                                <span class="comment-time">Hace 30 minutos</span>
+                    <c:forEach var="post" items="${posts}">
+                        <div class="post">
+                            <h3>${post.titulo}</h3>
+                            <p>${post.contenido}</p>
+                            <c:if test="${usuario.tipoUsuario == 'Admor'}">
+                                <div class="post-actions">
+                                    <button class="delete-btn" onclick="eliminarPost(${post.id})"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                                </div>
+                            </c:if>
+                            <c:if test="${usuario.tipoUsuario == 'Normal' && post.usuario.id == usuario.id}">
+                                <div class="post-actions">
+                                    <button class="edit-btn" onclick="editarPost(${post.id})"><i class="fa-solid fa-pencil"></i> Editar</button>
+                                </div>
+                            </c:if>
+                            <!-- Comentarios -->
+                            <div class="comments">
+                                <h4>Comentarios:</h4>
+                                <c:forEach var="comentario" items="${post.comentarios}">
+                                    <div class="comment">
+                                        <p>${comentario.contenido}</p>
+                                        <span class="comment-time">${comentario.fechaHora}</span>
+                                        <c:if test="${usuario.tipoUsuario == 'Admor'}">
+                                            <button class="delete-comment-btn" onclick="eliminarComentario(${comentario.id})"><i class="fa-solid fa-trash"></i></button>
+                                        </c:if>
+                                    </div>
+                                </c:forEach>
+                                <c:if test="${usuario.tipoUsuario == 'Normal'}">
+                                    <form action="crearComentarioServlet" method="POST" class="comment-form">
+                                        <textarea name="comentario" rows="2" placeholder="Escribe un comentario..." required></textarea>
+                                        <input type="hidden" name="postId" value="${post.id}">
+                                        <button type="submit"><i class="fa-solid fa-paper-plane"></i> Comentar</button>
+                                    </form>
+                                </c:if>
                             </div>
                         </div>
-                    </div>
+                    </c:forEach>
                 </div>
             </section>
         </section>
     </main>
+    <script>
+        function eliminarPost(id) {
+            if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
+                window.location.href = `deletePostServlet?id=${id}`;
+            }
+        }
+
+        function eliminarComentario(id) {
+            if (confirm("¿Estás seguro de que deseas eliminar este comentario?")) {
+                window.location.href = `deleteCommentServlet?id=${id}`;
+            }
+        }
+
+        function editarPost(id) {
+            window.location.href = `editarPublicacion.jsp?id=${id}`;
+        }
+    </script>
 </body>
 </html>
