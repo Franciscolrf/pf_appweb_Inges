@@ -15,7 +15,7 @@ import modelo.Post;
 public interface IPostDAO {
     
     boolean agregarPost(PostDTO post);
-    void modificarPost(PostDTO post);
+    boolean modificarPost(PostDTO post);
     boolean eliminarPost(long postId);
     public PostDTO obtenerPostPorId(long postId);
     public List<PostDTO> obtenerTodasLasPublicaciones();

@@ -176,11 +176,20 @@ li:hover {
     color: #fff;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     font-weight: bold;
 }
 
 .add-comment-btn:hover {
     background-color: #0056b3;
     color: #e0e0e0;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 15px;
+    background-color: #2e2e2e;
+    border: 1px solid #fcfcfc;
+    border-radius: 5px;
+    color: #f0f0f0;
 }
