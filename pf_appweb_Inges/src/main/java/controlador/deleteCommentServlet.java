@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import daos.ComentarioDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -55,9 +56,28 @@ public class deleteCommentServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String comentarioIdParam = request.getParameter("comentarioId");
+
+        try {
+            if (comentarioIdParam != null) {
+                long comentarioId = Long.parseLong(comentarioIdParam);
+                ComentarioDAO comentarioDAO = new ComentarioDAO();
+
+                boolean isDeleted = comentarioDAO.eliminarComentario(comentarioId);
+
+                if (isDeleted) {
+                    response.sendRedirect("PublicacionesServlet");
+                } else {
+                    response.sendRedirect("PublicacionesServlet?error=notFound");
+                }
+            } else {
+                response.sendRedirect("PublicacionesServlet?error=invalidId");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("PublicacionesServlet?error=internalError");
+        }
     }
 
     /**

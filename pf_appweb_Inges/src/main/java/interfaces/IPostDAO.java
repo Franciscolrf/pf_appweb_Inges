@@ -6,7 +6,6 @@ package interfaces;
 
 import dtos.PostDTO;
 import java.util.List;
-import modelo.Post;
 
 /**
  *
