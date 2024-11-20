@@ -4,31 +4,35 @@
  */
 package controlador;
 
+import daos.ComentarioDAO;
+import daos.PostDAO;
+import dtos.PostDTO;
+import dtos.UsuarioDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import daos.UsuarioDAO;
-import dtos.UsuarioDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mapeos.Encriptar;
+import java.util.List;
 
 /**
  *
- * @author Fran
+ * @author franc
  */
-@WebServlet(name = "loginServlet", urlPatterns = {"/loginServlet"})
-public class loginServlet extends HttpServlet {
+@WebServlet(name = "PublicacionesServlet", urlPatterns = {"/PublicacionesServlet"})
+public class PublicacionesServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-    Encriptar encriptar = new Encriptar();
+    private PostDAO postDAO;
+    private ComentarioDAO comentarioDAO;
 
+    
+    @Override
+    public void init() throws ServletException {
+        postDAO = new PostDAO();
+        comentarioDAO = new ComentarioDAO();
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,17 +50,16 @@ public class loginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet loginServlet</title>");
+            out.println("<title>Servlet PublicacionesServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet loginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet PublicacionesServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
-    // + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -68,7 +71,29 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Verificar que el usuario esté en sesión
+        UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
+        if (usuario == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        try {
+            PostDAO postDAO = new PostDAO();
+            List<PostDTO> publicaciones = postDAO.obtenerTodasLasPublicaciones();
+            List<PostDTO> publicacionesAncladas = postDAO.obtenerPublicacionesAncladas();
+
+            // Agregar publicaciones al request
+            request.setAttribute("publicaciones", publicaciones);
+            request.setAttribute("anclados", publicacionesAncladas);
+
+            // Redirigir a publicaciones.jsp
+            request.getRequestDispatcher("publicaciones.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    
     }
 
     /**
@@ -82,29 +107,8 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            // Obtener los parámetros del formulario
-            String correo = request.getParameter("correo");
-            String contrasenia = request.getParameter("contrasenia");
-
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            UsuarioDTO usuarioDTO = usuarioDAO.validarLogin(correo, contrasenia);
-
-            if (usuarioDTO == null) {
-                // Redirigir a login.jsp con mensaje de error si las credenciales no son correctas
-                response.sendRedirect("login.jsp?error=incorrectCredentials");
-            } else {
-                // Si las credenciales son correctas, iniciar sesión y redirigir al servlet de publicaciones
-                HttpSession session = request.getSession();
-                session.setAttribute("usuario", usuarioDTO);
-                response.sendRedirect("PublicacionesServlet");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(loginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            response.sendRedirect("login.jsp?error=internalError");
-        }
+        processRequest(request, response);
     }
-
 
     /**
      * Returns a short description of the servlet.
