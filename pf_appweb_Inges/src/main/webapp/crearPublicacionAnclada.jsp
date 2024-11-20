@@ -26,7 +26,7 @@
     <header>
         <h1>Crear Publicación Anclada</h1>
         <nav>
-            <a href="admPublicaciones.jsp" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="publicaciones.jsp" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
         </nav>
     </header>
     <main class="container">
