@@ -77,62 +77,72 @@
                 </div>
             </section>
 
-            <!-- Publicaciones recientes -->
-            <section class="published-posts">
-                <h2>Publicaciones Recientes</h2>
-                <div class="post-container">
-                    <% if (publicaciones != null && !publicaciones.isEmpty()) {
-                        for (PostDTO post : publicaciones) { %>
+                    <!-- Publicaciones recientes -->
+                    <section class="published-posts">
+                        <h2>Publicaciones Recientes</h2>
+                        <div class="post-container">
+                            <%
+                                if (publicaciones != null && !publicaciones.isEmpty()) {
+                                    boolean hayPublicaciones = false;
+                                    for (PostDTO post : publicaciones) {
+                                        if (!post.isAnclado()) {
+                                            hayPublicaciones = true;
+                            %>
                             <div class="post">
-                                <h3><%= post.getTitulo() %></h3>
-                                <p><%= post.getContenido() %></p>
+                                <h3><%= post.getTitulo()%></h3>
+                                <p><%= post.getContenido()%></p>
                                 <div class="post-actions">
-                                    <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) { %>
-                                        <button class="delete-btn" onclick="eliminarPost(<%= post.getId() %>)"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                                    <% } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) { %>
-                                        <button class="edit-btn" onclick="editarPost(<%= post.getId() %>)"><i class="fa-solid fa-pencil"></i> Editar</button>
+                                    <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
+                                    <button class="delete-btn" onclick="eliminarPost(<%= post.getId()%>)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                                    <% } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) {%>
+                                    <button class="edit-btn" onclick="editarPost(<%= post.getId()%>)"><i class="fa-solid fa-pencil"></i> Editar</button>
                                     <% } %>
                                 </div>
 
-                                    <!-- Comentarios -->
-                                    <div class="comments">
-                                        <% if (!post.isAnclado()) { %> <!-- Verifica si la publicación no está anclada -->
-                                        <h4>Comentarios:</h4>
-                                        <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) { %>
-                                        <% for (ComentarioDTO comentario : post.getComentarios()) {%>
-                                        <div class="comment">
-                                            <p><%= comentario.getContenido()%></p>
-                                            <span class="comment-time"><%= comentario.getFechaHora()%></span>
-                                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
-                                            <button class="delete-btn" onclick="eliminarComentario(<%= comentario.getId()%>)">
-                                                <i class="fa-solid fa-trash"></i> Eliminar
-                                            </button>
-                                            <% } %>
-                                        </div>
-                                        <% } %>
-                                        <% } else { %>
-                                        <p>No hay comentarios en esta publicación.</p>
-                                        <% } %>
+                                <!-- Comentarios -->
+                                <div class="comments">
+                                    <h4>Comentarios:</h4>
+                                    <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) { %>
+                                    <% for (ComentarioDTO comentario : post.getComentarios()) {%>
+                                    <div class="comment">
+                                        <p><%= comentario.getContenido()%></p>
+                                        <span class="comment-time"><%= comentario.getFechaHora()%></span>
+                                        <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
+                                        <button class="delete-btn" onclick="eliminarComentario(<%= comentario.getId()%>)">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
                                         <% } %>
                                     </div>
-
+                                    <% } %>
+                                    <% } else { %>
+                                    <p>No hay comentarios en esta publicación.</p>
+                                    <% } %>
+                                </div>
 
                                 <!-- Formulario para agregar comentarios -->
-                                <% if (!post.isAnclado() && usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) { %>
-                                    <form action="comentarioServlet" method="post" class="comment-form">
-                                        <input type="hidden" name="postId" value="<%= post.getId() %>">
-                                        <textarea name="contenido" placeholder="Escribe tu comentario aquí..." required></textarea>
-                                        <button type="submit" class="add-comment-btn"><i class="fa-solid fa-paper-plane"></i> Agregar comentario</button>
-                                    </form>
+                                <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) {%>
+                                <form action="comentarioServlet" method="post" class="comment-form">
+                                    <input type="hidden" name="postId" value="<%= post.getId()%>">
+                                    <textarea name="contenido" placeholder="Escribe tu comentario aquí..." required></textarea>
+                                    <button type="submit" class="add-comment-btn"><i class="fa-solid fa-paper-plane"></i> Agregar comentario</button>
+                                </form>
                                 <% } %>
                             </div>
-                        <% }
-                    } else { %>
-                        <p>No hay publicaciones recientes.</p>
-                    <% } %>
-                </div>
-            </section>
-        </section>
+                            <%
+                                    }
+                                }
+                                if (!hayPublicaciones) {
+                            %>
+                            <p>No hay publicaciones recientes.</p>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <p>No hay publicaciones recientes.</p>
+                            <% }%>
+                        </div>
+                    </section>
+
     </main>
 
     <script>
