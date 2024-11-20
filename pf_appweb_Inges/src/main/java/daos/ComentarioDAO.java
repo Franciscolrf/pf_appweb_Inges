@@ -40,6 +40,7 @@ public class ComentarioDAO implements IComentarioDAO{
         throw new UnsupportedOperationException("Unimplemented method 'modificarComentario'");
     }
     
+    @Override
     public List<ComentarioDTO> obtenerComentariosPorPublicacion(long postId) {
     List<ComentarioDTO> comentariosDTO = new ArrayList<>();
     String sql = "SELECT * FROM comentarios WHERE post_id = ?";

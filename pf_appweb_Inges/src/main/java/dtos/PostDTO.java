@@ -5,6 +5,7 @@
 package dtos;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -18,7 +19,15 @@ public class PostDTO {
     private Date fechaHoraCreacion;
     private Date fechaHoraEdicion;
     private UsuarioDTO usuario;
+    private List<ComentarioDTO> comentarios;
 
+    public List<ComentarioDTO> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<ComentarioDTO> comentarios) {
+        this.comentarios = comentarios;
+    }
     public PostDTO() {
     }
 

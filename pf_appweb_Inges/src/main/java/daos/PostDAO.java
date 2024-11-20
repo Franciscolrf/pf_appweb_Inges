@@ -4,6 +4,7 @@
  */
 package daos;
 
+import dtos.ComentarioDTO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
 import interfaces.IPostDAO;
@@ -64,6 +65,7 @@ public class PostDAO implements IPostDAO {
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
 
             Mapeos mapeos = new Mapeos();
+            ComentarioDAO comentarioDAO = new ComentarioDAO(); // Instancia para obtener comentarios
 
             while (resultSet.next()) {
                 Post post = new Post();
@@ -81,9 +83,15 @@ public class PostDAO implements IPostDAO {
 
                 // Convertir a DTO
                 PostDTO postDTO = mapeos.entidadToDTO(post);
+
+                // Obtener y asignar comentarios
+                List<ComentarioDTO> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
+                postDTO.setComentarios(comentarios);
+
                 publicacionesDTO.add(postDTO);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return publicacionesDTO;
