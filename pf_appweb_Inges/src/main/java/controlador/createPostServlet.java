@@ -99,7 +99,7 @@ public class createPostServlet extends HttpServlet {
         boolean creado = postDAO.agregarPost(nuevoPost);
 
         if (creado) {
-            response.sendRedirect("publicaciones.jsp?status=postSuccess");
+            response.sendRedirect("PublicacionesServlet");
         } else {
             response.sendRedirect("crearPublicaciones.jsp?status=postError");
         }

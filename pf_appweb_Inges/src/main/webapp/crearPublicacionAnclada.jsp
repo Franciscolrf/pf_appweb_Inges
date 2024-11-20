@@ -9,7 +9,7 @@
         return;
     } else if (!usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {
         // Redirigir a publicaciones.jsp si el usuario no es administrador
-        response.sendRedirect("publicaciones.jsp");
+        response.sendRedirect("PublicacionesServlet");
         return;
     }
 %>
@@ -26,7 +26,7 @@
     <header>
         <h1>Crear Publicación Anclada</h1>
         <nav>
-            <a href="publicaciones.jsp" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="PublicacionesServlet" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
         </nav>
     </header>
     <main class="container">

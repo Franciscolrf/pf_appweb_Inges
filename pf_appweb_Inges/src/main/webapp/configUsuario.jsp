@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-    <a href="publicaciones.jsp" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
+    <a href="PublicacionesServlet" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
     <h1>Configuración de Usuario</h1>
 </header>
 

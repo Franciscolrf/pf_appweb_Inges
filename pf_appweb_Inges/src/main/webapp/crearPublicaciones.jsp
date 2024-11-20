@@ -21,7 +21,7 @@
     <header>
         <h1>Crear Publicación</h1>
         <nav>
-            <a href="publicaciones.jsp" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <a href="PublicacionesServlet" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
         </nav>
     </header>
     <main class="container">

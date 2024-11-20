@@ -1,8 +1,8 @@
 <%@page import="dtos.UsuarioDTO"%>
+<%@page import="dtos.PostDTO"%>
+<%@page import="dtos.ComentarioDTO"%>
+<%@page import="java.util.List"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="dtos.PostDTO" %>
-<%@ page import="dtos.ComentarioDTO" %>
-<%@ page import="java.util.List" %>
 
 <%
     // Obtener el usuario de la sesión
@@ -97,15 +97,15 @@
                                 <!-- Comentarios -->
                                 <div class="comments">
                                     <h4>Comentarios:</h4>
-                                    <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) { %>
-                                    <% for (ComentarioDTO comentario : post.getComentarios()) {%>
-                                    <div class="comment">
-                                        <p><%= comentario.getContenido()%></p>
-                                        <span class="comment-time"><%= comentario.getFechaHora()%></span>
-                                    </div>
-                                    <% } %>
-                                    <% } else { %>
-                                    <p>No hay comentarios en esta publicación.</p>
+                                    <% if (post.getComentarios() != null && !post.getComentarios().isEmpty()) {
+                                        for (ComentarioDTO comentario : post.getComentarios()) { %>
+                                            <div class="comment">
+                                                <p><%= comentario.getContenido() %></p>
+                                                <span class="comment-time"><%= comentario.getFechaHora() %></span>
+                                            </div>
+                                        <% }
+                                    } else { %>
+                                        <p>No hay comentarios en esta publicación.</p>
                                     <% } %>
                                 </div>
 
