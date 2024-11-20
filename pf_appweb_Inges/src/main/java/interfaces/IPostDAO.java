@@ -4,6 +4,7 @@
  */
 package interfaces;
 
+import dtos.PostDTO;
 import modelo.Post;
 
 /**
@@ -12,8 +13,8 @@ import modelo.Post;
  */
 public interface IPostDAO {
     
-    void agregarPost(Post post);
-    void modificarPost(Post post);
-    void eliminarPost(Post post);
+    boolean agregarPost(PostDTO post);
+    void modificarPost(PostDTO post);
+    void eliminarPost(PostDTO post);
     Post consultarPost(int id);
 }
