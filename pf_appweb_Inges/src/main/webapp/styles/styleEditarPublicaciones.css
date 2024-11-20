@@ -10,48 +10,13 @@ body {
     font-family: 'Arial', sans-serif;
 }
 
-header {
-    background-color: #1c1c1c;
-    padding: 20px;
-    text-align: center;
-    position: relative;
-}
-
-h1 {
-    font-size: 3.5vh;
-    margin: 0;
-}
-
-nav {
-    position: absolute;
-    left: 20px;
-    top: 20px;
-}
-
-.exit-btn {
-    font-size: 20px;
-    color: #fff;
-    text-decoration: none;
-}
-
-.exit-btn:hover {
-    color: #f0f0f0;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 20px;
-}
-
 .form-container {
     background-color: #1e1e1e;
     padding: 40px;
     border-radius: 10px;
     width: 100%;
-    max-width: 900px; 
+    max-width: 900px;
+    margin: 50px auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
@@ -75,7 +40,7 @@ label {
     color: #f0f0f0;
 }
 
-input[type="text"], textarea, input[type="checkbox"] {
+input[type="text"], textarea {
     width: 100%;
     padding: 15px;
     background-color: #2e2e2e;
@@ -94,29 +59,13 @@ textarea {
     min-height: 150px;
 }
 
-input[type="checkbox"] {
-    width: auto;
-    margin-right: 10px;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.checkbox-label {
-    font-size: 2.3vh;
-    color: #f0f0f0;
-}
-
-.action-btns {
+.form-actions {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
 }
 
-.save-btn, .cancel-btn {
+button.submit-btn, a.cancel-btn {
     width: 48%;
     text-align: center;
     padding: 15px;
@@ -125,28 +74,38 @@ input[type="checkbox"] {
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.save-btn {
+button.submit-btn {
     background-color: #28a745;
     color: #fff;
     border: none;
 }
 
-.save-btn:hover {
+button.submit-btn:hover {
     background-color: #218838;
 }
 
-.cancel-btn {
+a.cancel-btn {
     background-color: #dc3545;
     color: #fff;
     border: none;
 }
 
-.cancel-btn:hover {
+a.cancel-btn:hover {
     background-color: #c82333;
 }
 
-.cancel-btn i, .save-btn i {
+button.submit-btn i, a.cancel-btn i {
     margin-right: 8px;
+}
+
+p {
+    color: red;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 10px;
 }
