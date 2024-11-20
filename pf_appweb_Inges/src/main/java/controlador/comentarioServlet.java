@@ -6,6 +6,7 @@ package controlador;
 
 import daos.ComentarioDAO;
 import daos.PostDAO;
+import dtos.ComentarioDTO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
 import java.io.IOException;
@@ -15,24 +16,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author franc
  */
-@WebServlet(name = "PublicacionesServlet", urlPatterns = {"/PublicacionesServlet"})
-public class PublicacionesServlet extends HttpServlet {
+@WebServlet(name = "comentarioServlet", urlPatterns = {"/comentarioServlet"})
+public class comentarioServlet extends HttpServlet {
 
-    private PostDAO postDAO;
-    private ComentarioDAO comentarioDAO;
-
-    
-    @Override
-    public void init() throws ServletException {
-        postDAO = new PostDAO();
-        comentarioDAO = new ComentarioDAO();
-    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,10 +41,10 @@ public class PublicacionesServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PublicacionesServlet</title>");
+            out.println("<title>Servlet comentarioServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet PublicacionesServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet comentarioServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -71,29 +62,7 @@ public class PublicacionesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Verificar que el usuario esté en sesión
-        UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
-        if (usuario == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        try {
-            PostDAO postDAO = new PostDAO();
-            List<PostDTO> publicaciones = postDAO.obtenerTodasLasPublicaciones();
-            List<PostDTO> publicacionesAncladas = postDAO.obtenerPublicacionesAncladas();
-
-            // Agregar publicaciones al request
-            request.setAttribute("publicaciones", publicaciones);
-            request.setAttribute("anclados", publicacionesAncladas);
-
-            // Redirigir a publicaciones.jsp
-            request.getRequestDispatcher("publicaciones.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp");
-        }
-    
+        processRequest(request, response);
     }
 
     /**
@@ -107,7 +76,60 @@ public class PublicacionesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         try {
+            // Obtener el ID del post y el contenido del comentario
+            String postIdParam = request.getParameter("postId");
+            String contenido = request.getParameter("contenido");
+
+            if (postIdParam == null || contenido == null || contenido.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("Parámetros inválidos.");
+                return;
+            }
+
+            long postId = Long.parseLong(postIdParam);
+
+            // Obtener el usuario actual de la sesión
+            UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
+            if (usuario == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Usuario no autenticado.");
+                return;
+            }
+
+            // Obtener el PostDTO asociado al comentario
+            PostDAO postDAO = new PostDAO();
+            PostDTO post = postDAO.obtenerPostPorId(postId);
+
+            if (post == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("El post no existe.");
+                return;
+            }
+
+            // Crear el objeto ComentarioDTO
+            ComentarioDTO comentario = new ComentarioDTO();
+            comentario.setContenido(contenido);
+            comentario.setUsuario(usuario);
+            comentario.setPost(post);
+
+            // Guardar el comentario usando el DAO
+            ComentarioDAO comentarioDAO = new ComentarioDAO();
+            boolean exito = comentarioDAO.agregarComentario(comentario);
+
+            if (exito) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("Comentario agregado exitosamente.");
+                response.sendRedirect("PublicacionesServlet");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("Error al agregar el comentario.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Ocurrió un error al procesar la solicitud.");
+        }
     }
 
     /**
