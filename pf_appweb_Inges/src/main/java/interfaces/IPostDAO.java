@@ -5,6 +5,7 @@
 package interfaces;
 
 import dtos.PostDTO;
+import java.util.List;
 import modelo.Post;
 
 /**
@@ -17,4 +18,6 @@ public interface IPostDAO {
     void modificarPost(PostDTO post);
     void eliminarPost(PostDTO post);
     Post consultarPost(int id);
+    public List<PostDTO> obtenerTodasLasPublicaciones();
+    public List<PostDTO> obtenerPublicacionesAncladas();
 }
