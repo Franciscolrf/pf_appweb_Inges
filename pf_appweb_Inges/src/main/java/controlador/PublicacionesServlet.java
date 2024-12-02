@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import bo.PostBO;
 import daos.ComentarioDAO;
 import daos.PostDAO;
 import dtos.PostDTO;
@@ -79,9 +80,9 @@ public class PublicacionesServlet extends HttpServlet {
         }
 
         try {
-            PostDAO postDAO = new PostDAO();
-            List<PostDTO> publicaciones = postDAO.obtenerTodasLasPublicaciones();
-            List<PostDTO> publicacionesAncladas = postDAO.obtenerPublicacionesAncladas();
+            PostBO postBO = new PostBO();
+            List<PostDTO> publicaciones = postBO.obtenerTodasLasPublicaciones();
+            List<PostDTO> publicacionesAncladas = postBO.obtenerPublicacionesAncladas();
 
             // Agregar publicaciones al request
             request.setAttribute("publicaciones", publicaciones);

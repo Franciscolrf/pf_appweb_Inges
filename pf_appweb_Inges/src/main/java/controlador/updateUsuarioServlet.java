@@ -22,9 +22,10 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
-import mapeos.Mapeos;
+import conversor.Mapeos;
 import modelo.Genero;
 import modelo.Usuario;
+import negocio.UsuarioBO;
 
 /**
  *
@@ -98,8 +99,8 @@ private static final String UPLOAD_DIRECTORY = "uploads";
         }
 
         // Obtener valores actuales del usuario de la base de datos
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuario usuarioActualizado = usuarioDAO.obtenerUsuario(usuario.getId().intValue());
+        UsuarioBO usuarioBO = new UsuarioBO();
+        UsuarioDTO usuarioActualizado = usuarioBO.obtenerUsuarioPorId(usuario.getId().intValue());
 
         // Obtener datos del formulario
         String nombreCompletoFormulario = request.getParameter("nombreCompleto");
@@ -196,7 +197,7 @@ private static final String UPLOAD_DIRECTORY = "uploads";
         }
 
         // Llamar al método modificarUsuario en UsuarioDAO
-        boolean actualizado = usuarioDAO.modificarUsuario(usuario, nuevaContrasenia);
+        boolean actualizado = usuarioBO.modificarUsuario(usuario, nuevaContrasenia);
 
         // Configuración del mensaje de respuesta
         

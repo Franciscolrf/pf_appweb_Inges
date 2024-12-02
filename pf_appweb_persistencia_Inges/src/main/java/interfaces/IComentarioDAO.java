@@ -4,8 +4,8 @@
  */
 package interfaces;
 
-import dtos.ComentarioDTO;
 import java.util.List;
+import modelo.Comentario;
 
 /**
  *
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface IComentarioDAO {
     
-    boolean agregarComentario(ComentarioDTO comentario);
+    boolean agregarComentario(Comentario comentario);
     boolean eliminarComentario(long comentarioId);
-    public List<ComentarioDTO> obtenerComentariosPorPublicacion(long postId);
+    public List<Comentario> obtenerComentariosPorPublicacion(long postId);
 }

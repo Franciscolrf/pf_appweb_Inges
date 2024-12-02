@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
+import negocio.UsuarioBO;
 
 /**
  *
@@ -87,8 +88,8 @@ public class loginServlet extends HttpServlet {
             String correo = request.getParameter("correo");
             String contrasenia = request.getParameter("contrasenia");
 
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            UsuarioDTO usuarioDTO = usuarioDAO.validarLogin(correo, contrasenia);
+            UsuarioBO usuarioBO = new UsuarioBO();
+            UsuarioDTO usuarioDTO = usuarioBO.validarLogin(correo, contrasenia);
 
             if (usuarioDTO == null) {
                 // Redirigir a login.jsp con mensaje de error si las credenciales no son correctas

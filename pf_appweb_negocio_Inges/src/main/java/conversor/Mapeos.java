@@ -1,4 +1,4 @@
-package mapeos;
+package conversor;
 
 import dtos.ComentarioDTO;
 import dtos.PostDTO;
@@ -44,28 +44,7 @@ public class Mapeos {
         return usuarioDTO;
     }
 
-    public Genero stringToGenero(String generoStr) {
-        switch (generoStr.toUpperCase()) {
-            case "MASCULINO":
-                return Genero.MASCULINO;
-            case "FEMENINO":
-                return Genero.FEMENINO;
-            default:
-                throw new IllegalArgumentException("Género inválido: " + generoStr);
-        }
-    }
 
-
-    public TipoUsuario stringToTipoUsuario(String tipoStr) {
-        switch (tipoStr.toUpperCase()) {
-            case "ADMOR":
-                return TipoUsuario.ADMOR;
-            case "NORMAL":
-                return TipoUsuario.NORMAL;
-            default:
-                throw new IllegalArgumentException("Tipo de usuario inválido: " + tipoStr);
-        }
-    }
 
     // Convertir Entidad Post a DTO
     public PostDTO entidadToDTO(Post post) {

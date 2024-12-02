@@ -4,9 +4,6 @@
  */
 package daos;
 
-import dtos.ComentarioDTO;
-import dtos.PostDTO;
-import dtos.UsuarioDTO;
 import interfaces.IPostDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import mapeos.Mapeos;
 import modelo.Post;
 import modelo.Usuario;
 
@@ -25,7 +21,7 @@ import modelo.Usuario;
 public class PostDAO implements IPostDAO {
 
     @Override
-    public boolean agregarPost(PostDTO post) {
+    public boolean agregarPost(Post post) {
         String sql = "INSERT INTO posts (titulo, contenido, anclado, usuario_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -42,7 +38,7 @@ public class PostDAO implements IPostDAO {
     }
 
     @Override
-    public boolean modificarPost(PostDTO post) {
+    public boolean modificarPost(Post post) {
         String sql = "UPDATE posts SET titulo = ?, contenido = ? WHERE id = ?";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -72,13 +68,12 @@ public class PostDAO implements IPostDAO {
     }
 
     @Override
-    public List<PostDTO> obtenerTodasLasPublicaciones() {
-        List<PostDTO> publicacionesDTO = new ArrayList<>();
+    public List<Post> obtenerTodasLasPublicaciones() {
+        List<Post> publicaciones = new ArrayList<>();
         String sql = "SELECT * FROM posts";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
 
-            Mapeos mapeos = new Mapeos();
             ComentarioDAO comentarioDAO = new ComentarioDAO(); // Instancia para obtener comentarios
 
             while (resultSet.next()) {
@@ -96,29 +91,28 @@ public class PostDAO implements IPostDAO {
                 post.setUsuario(usuario);
 
                 // Convertir a DTO
-                PostDTO postDTO = mapeos.entidadToDTO(post);
+//                PostDTO postDTO = mapeos.entidadToDTO(post);
 
                 // Obtener y asignar comentarios
-                List<ComentarioDTO> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
-                postDTO.setComentarios(comentarios);
+//                List<Comentario> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
+//                postDTO.setComentarios(comentarios);
 
-                publicacionesDTO.add(postDTO);
+                publicaciones.add(post);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return publicacionesDTO;
+        return publicaciones;
     }
 
     @Override
-    public List<PostDTO> obtenerPublicacionesAncladas() {
-        List<PostDTO> publicacionesAncladasDTO = new ArrayList<>();
+    public List<Post> obtenerPublicacionesAncladas() {
+        List<Post> publicacionesAncladas = new ArrayList<>();
         String sql = "SELECT * FROM posts WHERE anclado = TRUE";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
 
-            Mapeos mapeos = new Mapeos();
 
             while (resultSet.next()) {
                 Post post = new Post();
@@ -135,19 +129,19 @@ public class PostDAO implements IPostDAO {
                 post.setUsuario(usuario);
 
                 // Convertir a DTO
-                PostDTO postDTO = mapeos.entidadToDTO(post);
-                publicacionesAncladasDTO.add(postDTO);
+//                PostDTO postDTO = mapeos.entidadToDTO(post);
+                publicacionesAncladas.add(post);
             }
         } catch (SQLException e) {
         }
 
-        return publicacionesAncladasDTO;
+        return publicacionesAncladas;
     }
 
     @Override
-    public PostDTO obtenerPostPorId(long postId) {
+    public Post obtenerPostPorId(long postId) {
         String sql = "SELECT * FROM posts WHERE id = ?";
-        PostDTO postDTO = null;
+        Post postDTO = null;
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -170,13 +164,12 @@ public class PostDAO implements IPostDAO {
                 post.setUsuario(usuario);
 
                 // Mapear los comentarios relacionados con el post
-                ComentarioDAO comentarioDAO = new ComentarioDAO();
-                List<ComentarioDTO> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
-
-                // Convertir el post a DTO
-                Mapeos mapeos = new Mapeos();
-                postDTO = mapeos.entidadToDTO(post);
-                postDTO.setComentarios(comentarios); // Asociar los comentarios
+//                ComentarioDAO comentarioDAO = new ComentarioDAO();
+//                List<Comentario> comentarios = comentarioDAO.obtenerComentariosPorPublicacion(post.getId());
+//
+//                // Convertir el post a DTO
+////                postDTO = mapeos.entidadToDTO(post);
+//                postDTO.setComentarios(comentarios); // Asociar los comentarios
             }
         } catch (SQLException e) {
             e.printStackTrace();

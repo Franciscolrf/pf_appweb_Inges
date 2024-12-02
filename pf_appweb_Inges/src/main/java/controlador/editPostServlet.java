@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import bo.PostBO;
 import daos.PostDAO;
 import dtos.PostDTO;
 import java.io.IOException;
@@ -64,8 +65,8 @@ public class editPostServlet extends HttpServlet {
         try {
             if (postIdParam != null) {
                 long postId = Long.parseLong(postIdParam);
-                PostDAO postDAO = new PostDAO();
-                PostDTO postDTO = postDAO.obtenerPostPorId(postId);
+                PostBO postBO = new PostBO();
+                PostDTO postDTO = postBO.obtenerPostPorId(postId);
 
                 if (postDTO != null) {
                     request.setAttribute("post", postDTO);
@@ -106,8 +107,8 @@ public class editPostServlet extends HttpServlet {
 
             long id = Long.parseLong(idParam);
 
-            PostDAO postDAO = new PostDAO();
-            PostDTO postDTO = postDAO.obtenerPostPorId(id);
+            PostBO postBO = new PostBO();
+            PostDTO postDTO = postBO.obtenerPostPorId(id);
 
             if (postDTO.isAnclado()) {
                 response.sendRedirect("editarPublicacion.jsp?postId=" + postDTO.getId() + "&error=notEditable");
@@ -117,7 +118,7 @@ public class editPostServlet extends HttpServlet {
             postDTO.setTitulo(titulo);
             postDTO.setContenido(contenido);
 
-            boolean isUpdated = postDAO.modificarPost(postDTO);
+            boolean isUpdated = postBO.modificarPost(postDTO);
 
             if (isUpdated) {
                 response.sendRedirect("PublicacionesServlet?success=postUpdated");

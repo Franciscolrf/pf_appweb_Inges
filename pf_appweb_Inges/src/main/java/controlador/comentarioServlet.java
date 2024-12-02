@@ -4,6 +4,8 @@
  */
 package controlador;
 
+import bo.ComentarioBO;
+import bo.PostBO;
 import daos.ComentarioDAO;
 import daos.PostDAO;
 import dtos.ComentarioDTO;
@@ -98,8 +100,8 @@ public class comentarioServlet extends HttpServlet {
             }
 
             // Obtener el PostDTO asociado al comentario
-            PostDAO postDAO = new PostDAO();
-            PostDTO post = postDAO.obtenerPostPorId(postId);
+            PostBO postBO = new PostBO();
+            PostDTO post = postBO.obtenerPostPorId(postId);
 
             if (post == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -114,8 +116,8 @@ public class comentarioServlet extends HttpServlet {
             comentario.setPost(post);
 
             // Guardar el comentario usando el DAO
-            ComentarioDAO comentarioDAO = new ComentarioDAO();
-            boolean exito = comentarioDAO.agregarComentario(comentario);
+            ComentarioBO comentarioBO = new ComentarioBO();
+            boolean exito = comentarioBO.agregarComentario(comentario);
 
             if (exito) {
                 response.setStatus(HttpServletResponse.SC_OK);

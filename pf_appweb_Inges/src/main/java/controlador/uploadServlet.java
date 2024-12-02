@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import mapeos.Encriptar;
 import modelo.Genero;
 import modelo.TipoUsuario;
+import negocio.UsuarioBO;
 
 /**
  *
@@ -138,7 +139,7 @@ public class uploadServlet extends HttpServlet {
         usuario.setDireccion(direccion); // Establecer la dirección completa
 
         // Guardar el usuario en la base de datos
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        UsuarioBO usuarioDAO = new UsuarioBO();
         try {
             boolean registroExitoso = usuarioDAO.registrarUsuario(usuario);
 
@@ -153,11 +154,6 @@ public class uploadServlet extends HttpServlet {
                 request.setAttribute("tipoMensaje", "error");
                 request.getRequestDispatcher("registro.jsp").forward(request, response);
             }
-        } catch (SQLIntegrityConstraintViolationException e) {
-            // Manejar el error de correo duplicado
-            request.setAttribute("mensaje", "El correo electrónico ya está registrado. Usa otro.");
-            request.setAttribute("tipoMensaje", "error");
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
         } catch (Exception e) {
             // Manejar otros errores
             e.printStackTrace();
@@ -165,6 +161,8 @@ public class uploadServlet extends HttpServlet {
             request.setAttribute("tipoMensaje", "error");
             request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
+        // Manejar el error de correo duplicado
+
     }
 
     private String getFileName(Part part) {

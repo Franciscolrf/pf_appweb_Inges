@@ -4,7 +4,6 @@
  */
 package daos;
 
-import dtos.UsuarioDTO;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 import interfaces.IUsuarioDAO;
 import java.sql.SQLIntegrityConstraintViolationException;
 import mapeos.Encriptar;
-import mapeos.Mapeos;
+import mapeos.Utilidades;
 import modelo.Genero;
 import modelo.TipoUsuario;
 import modelo.Usuario;
@@ -26,10 +25,10 @@ import modelo.Usuario;
 public class UsuarioDAO implements IUsuarioDAO {
 
     Encriptar encriptar = new Encriptar();
-    Mapeos mapeos = new Mapeos();
+//    Mapeos mapeos = new Mapeos();
 
     @Override
-    public boolean registrarUsuario(UsuarioDTO usuario) throws SQLIntegrityConstraintViolationException {
+    public boolean registrarUsuario(Usuario usuario) throws SQLIntegrityConstraintViolationException {
         String sql = "INSERT INTO usuarios (nombreCompleto, correo, contrasenia, telefono, avatar, direccion, fechaNacimiento, genero, tipo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -54,7 +53,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         }
     }
 
-    public boolean modificarUsuario(UsuarioDTO usuario, String nuevaContrasenia) {
+    public boolean modificarUsuario(Usuario usuario, String nuevaContrasenia) {
         Connection conn = null;
         PreparedStatement stmt = null;
         boolean actualizado = false;
@@ -111,7 +110,6 @@ public class UsuarioDAO implements IUsuarioDAO {
 
     @Override
     public Usuario obtenerUsuario(int id) {
-        Mapeos mapeos = new Mapeos();
         String sql = "SELECT * FROM usuarios WHERE id = ?";
         Usuario usuario = null;
 
@@ -130,8 +128,8 @@ public class UsuarioDAO implements IUsuarioDAO {
                 usuario.setAvatar(resultSet.getString("avatar"));
                 usuario.setContrasenia(resultSet.getString("contrasenia"));
                 usuario.setFechaNacimiento(resultSet.getDate("fechaNacimiento"));
-                usuario.setGenero(mapeos.stringToGenero(resultSet.getString("genero")));
-                usuario.setTipoUsuario(mapeos.stringToTipoUsuario(resultSet.getString("tipo")));
+                usuario.setGenero(Utilidades.stringToGenero(resultSet.getString("genero")));
+                usuario.setTipoUsuario(Utilidades.stringToTipoUsuario(resultSet.getString("tipo")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -170,7 +168,7 @@ public class UsuarioDAO implements IUsuarioDAO {
         return usuario;
     }
 
-    public UsuarioDTO validarLogin(String correo, String contraseniaIngresada) throws Exception {
+    public Usuario validarLogin(String correo, String contraseniaIngresada) throws Exception {
         Usuario usuario = obtenerUsuarioPorCorreo(correo);
 
         if (usuario != null) {
@@ -180,14 +178,15 @@ public class UsuarioDAO implements IUsuarioDAO {
             // Comparar la contraseña encriptada
             if (usuario.getContrasenia().equals(contraseniaIngresadaEncriptada)) {
                 // Convertir Usuario a UsuarioDTO y devolverlo
-                return mapeos.usuarioToDTO(usuario);
+                return usuario;
+//                return mapeos.usuarioToDTO(usuario);
             }
         }
 
         return null; // Retornar null si no coincide o no existe
     }
 
-    private void validarUsuario(UsuarioDTO usuario) {
+    private void validarUsuario(Usuario usuario) {
         if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {
             throw new IllegalArgumentException("El nombre completo es obligatorio.");
         }

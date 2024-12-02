@@ -4,7 +4,6 @@
  */
 package daos;
 
-import dtos.ComentarioDTO;
 import interfaces.IComentarioDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import mapeos.Mapeos;
 import modelo.Comentario;
 import modelo.Usuario;
 
@@ -23,7 +21,7 @@ import modelo.Usuario;
 public class ComentarioDAO implements IComentarioDAO {
 
     @Override
-    public boolean agregarComentario(ComentarioDTO comentario) {
+    public boolean agregarComentario(Comentario comentario) {
         String sql = "INSERT INTO comentarios (contenido, usuario_id, post_id, fechaHora) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -56,8 +54,8 @@ public class ComentarioDAO implements IComentarioDAO {
 
 
     @Override
-    public List<ComentarioDTO> obtenerComentariosPorPublicacion(long postId) {
-        List<ComentarioDTO> comentariosDTO = new ArrayList<>();
+    public List<Comentario> obtenerComentariosPorPublicacion(long postId) {
+        List<Comentario> comentarios = new ArrayList<>();
         String sql = "SELECT * FROM comentarios WHERE post_id = ?";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -65,7 +63,6 @@ public class ComentarioDAO implements IComentarioDAO {
             statement.setLong(1, postId);
             ResultSet resultSet = statement.executeQuery();
 
-            Mapeos mapeos = new Mapeos();
 
             while (resultSet.next()) {
                 Comentario comentario = new Comentario();
@@ -79,14 +76,14 @@ public class ComentarioDAO implements IComentarioDAO {
                 comentario.setUsuario(usuario);
 
                 // Convertir a DTO
-                ComentarioDTO comentarioDTO = mapeos.comentarioEntidadToDTO(comentario);
-                comentariosDTO.add(comentarioDTO);
+//                ComentarioDTO comentarioDTO = mapeos.comentarioEntidadToDTO(comentario);
+                comentarios.add(comentario);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return comentariosDTO;
+        return comentarios;
     }
 
 }

@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import bo.PostBO;
 import daos.PostDAO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
@@ -95,8 +96,8 @@ public class createPostServlet extends HttpServlet {
         nuevoPost.setUsuario(usuario);
 
         // Guardar en la base de datos
-        PostDAO postDAO = new PostDAO();
-        boolean creado = postDAO.agregarPost(nuevoPost);
+        PostBO postBO = new PostBO();
+        boolean creado = postBO.agregarPost(nuevoPost);
 
         if (creado) {
             response.sendRedirect("PublicacionesServlet");
