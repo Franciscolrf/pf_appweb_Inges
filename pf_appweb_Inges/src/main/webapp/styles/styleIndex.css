@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: black; 
+    background-color: black;
     font-family: 'Arial', sans-serif;
     color: #fff;
 }
@@ -26,6 +26,11 @@ header {
 .logo {
     width: 300px;
     margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
 }
 
 h1 {
@@ -45,25 +50,26 @@ h1 {
 h2 {
     font-size: 6vh;
     margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
 }
 
 p {
-    font-size:2vh;
+    font-size: 2vh;
     margin-bottom: 20px;
     max-width: 600px;
+    line-height: 1.5;
 }
 
 .options-container {
     display: flex;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.7); 
+    background-color: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 10px;
     flex-direction: row;
-    gap: 10px;
+    gap: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
-
-
 
 .btn {
     display: inline-flex;
@@ -77,12 +83,25 @@ p {
     border-radius: 5px;
     text-decoration: none;
     font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .btn:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
 }
 
 .btn i {
     margin-right: 5px;
+}
+
+.btn:active {
+    transform: scale(0.95);
 }

@@ -94,6 +94,40 @@ public class deleteCommentServlet extends HttpServlet {
         processRequest(request, response);
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String comentarioIdParam = request.getParameter("comentarioId");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            if (comentarioIdParam != null) {
+                long comentarioId = Long.parseLong(comentarioIdParam);
+                ComentarioDAO comentarioDAO = new ComentarioDAO();
+
+                boolean isDeleted = comentarioDAO.eliminarComentario(comentarioId);
+
+                if (isDeleted) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("{\"message\": \"Comentario eliminado exitosamente.\"}");
+                } else {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.getWriter().write("{\"error\": \"No se encontró el comentario.\"}");
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"ID de comentario inválido.\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error interno del servidor.\"}");
+        }
+    }
+
+
     /**
      * Returns a short description of the servlet.
      *

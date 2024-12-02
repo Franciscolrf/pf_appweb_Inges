@@ -91,73 +91,57 @@ private static final String UPLOAD_DIRECTORY = "uploads";
         HttpSession session = request.getSession();
         String mensaje = "Cambios realizados con éxito.";
         UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
-        boolean nombreActualizado= false, correoActualizado= false, telefonoActualizado= false, direccionActualizado = false, contraseñaActualizada=false;
+        boolean nombreActualizado = false, correoActualizado = false, telefonoActualizado = false, direccionActualizado = false, contraseñaActualizada = false;
 
         if (usuario == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // Obtener valores actuales del usuario de la base de datos
         UsuarioBO usuarioBO = new UsuarioBO();
         UsuarioDTO usuarioActualizado = usuarioBO.obtenerUsuarioPorId(usuario.getId().intValue());
 
-        // Obtener datos del formulario
         String nombreCompletoFormulario = request.getParameter("nombreCompleto");
         if (nombreCompletoFormulario != null && !nombreCompletoFormulario.trim().isEmpty()
-                && (usuarioActualizado.getNombreCompleto() == null
-                || !usuarioActualizado.getNombreCompleto().equals(nombreCompletoFormulario))) {
+                && !nombreCompletoFormulario.equals(usuarioActualizado.getNombreCompleto())) {
             usuario.setNombreCompleto(nombreCompletoFormulario);
-             nombreActualizado = true;
+            nombreActualizado = true;
         }
 
         String correoFormulario = request.getParameter("correo");
         if (correoFormulario != null && !correoFormulario.trim().isEmpty()
-                && (usuarioActualizado.getCorreo() == null
-                || !usuarioActualizado.getCorreo().equals(correoFormulario))) {
+                && !correoFormulario.equals(usuarioActualizado.getCorreo())) {
             usuario.setCorreo(correoFormulario);
-             correoActualizado = true;
+            correoActualizado = true;
         }
 
         String telefonoFormulario = request.getParameter("telefono");
-
-        if (telefonoFormulario != null && !telefonoFormulario.trim().isEmpty()) {
-            telefonoFormulario = telefonoFormulario.trim(); // Normaliza eliminando espacios extra
-
-            // Comprueba si el teléfono actual es diferente al proporcionado
-            if (usuarioActualizado.getTelefono() == null
-                    || !usuarioActualizado.getTelefono().trim().equals(telefonoFormulario)) {
-
-                usuario.setTelefono(telefonoFormulario);
-                telefonoActualizado = true;
-            }
+        if (telefonoFormulario != null && !telefonoFormulario.trim().isEmpty()
+                && !telefonoFormulario.equals(usuarioActualizado.getTelefono())) {
+            usuario.setTelefono(telefonoFormulario);
+            telefonoActualizado = true;
         }
 
         String direccionFormulario = request.getParameter("direccion");
         if (direccionFormulario != null && !direccionFormulario.trim().isEmpty()
-                && (usuarioActualizado.getDireccion() == null
-                || !usuarioActualizado.getDireccion().equals(direccionFormulario))) {
+                && !direccionFormulario.equals(usuarioActualizado.getDireccion())) {
             usuario.setDireccion(direccionFormulario);
-             direccionActualizado = true;
+            direccionActualizado = true;
         }
-
 
         String fechaNacimientoFormulario = request.getParameter("fechaNacimiento");
         if (fechaNacimientoFormulario != null && !fechaNacimientoFormulario.isEmpty()
-                && (usuarioActualizado.getFechaNacimiento() == null
-                || !usuarioActualizado.getFechaNacimiento().equals(Date.valueOf(fechaNacimientoFormulario)))) {
+                && !fechaNacimientoFormulario.equals(usuarioActualizado.getFechaNacimiento().toString())) {
             usuario.setFechaNacimiento(Date.valueOf(fechaNacimientoFormulario));
         }
 
         String generoFormulario = request.getParameter("genero");
         if (generoFormulario != null && !generoFormulario.trim().isEmpty()
-                && (usuarioActualizado.getGenero() == null
-                || !usuarioActualizado.getGenero().equals(Genero.valueOf(generoFormulario.toUpperCase())))) {
+                && !generoFormulario.equalsIgnoreCase(usuarioActualizado.getGenero().toString())) {
             usuario.setGenero(Genero.valueOf(generoFormulario.toUpperCase()));
         }
 
         Part avatarPart = request.getPart("avatar");
-        String avatarPath = null;
         if (avatarPart != null && avatarPart.getSize() > 0) {
             String fileName = avatarPart.getSubmittedFileName();
             String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
@@ -165,76 +149,28 @@ private static final String UPLOAD_DIRECTORY = "uploads";
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
-            avatarPath = "uploads/" + fileName;
+            String avatarPath = "uploads/" + fileName;
             avatarPart.write(uploadPath + File.separator + fileName);
-
-            if (usuarioActualizado.getAvatar() == null || !avatarPath.equals(usuarioActualizado.getAvatar())) {
-                usuario.setAvatar(avatarPath);
-            }
-        } else {
-            usuario.setAvatar(usuarioActualizado.getAvatar());
+            usuario.setAvatar(avatarPath);
         }
 
-        // Nueva contraseña solo si el campo no está vacío
         String nuevaContrasenia = request.getParameter("contrasenia");
-        Encriptar enc = new Encriptar();
-        String contraseniaFormularioEncriptada = null;
-        String contraseniaUser = usuarioActualizado.getContrasenia();
         if (nuevaContrasenia != null && !nuevaContrasenia.trim().isEmpty()) {
             try {
-                contraseniaFormularioEncriptada = Encriptar.encriptar(nuevaContrasenia);
+                String contraseniaFormularioEncriptada = Encriptar.encriptar(nuevaContrasenia);
+                if (!contraseniaFormularioEncriptada.equals(usuarioActualizado.getContrasenia())) {
+                    usuario.setContrasenia(contraseniaFormularioEncriptada);
+                    contraseñaActualizada = true;
+                }
             } catch (Exception ex) {
                 Logger.getLogger(updateUsuarioServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            try {
-                if (!contraseniaFormularioEncriptada.equals(contraseniaUser)) {
-                    usuario.setContrasenia(nuevaContrasenia);
-                    contraseñaActualizada =true;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
-        // Llamar al método modificarUsuario en UsuarioDAO
         boolean actualizado = usuarioBO.modificarUsuario(usuario, nuevaContrasenia);
 
-        // Configuración del mensaje de respuesta
-        
-              if (nombreActualizado == true) {
-            mensaje += " Nombre actualizado.";
-        }
-        if (correoActualizado == true) {
-            mensaje += " Correo actualizado.";
-        }
-        if (telefonoActualizado == true) {
-            mensaje += " Teléfono actualizado.";
-        }
-        if (direccionActualizado == true) {
-            mensaje += " Dirección actualizada.";
-        }
-        if (usuarioActualizado.getFechaNacimiento() == null
-                || !usuarioActualizado.getFechaNacimiento().equals(usuario.getFechaNacimiento())) {
-            mensaje += " Fecha de nacimiento actualizada.";
-        }
-        if (usuarioActualizado.getGenero() == null
-                || !usuarioActualizado.getGenero().equals(usuario.getGenero())) {
-            mensaje += " Género actualizado.";
-        }
-        if (usuarioActualizado.getAvatar() == null
-                || !usuarioActualizado.getAvatar().equals(usuario.getAvatar())) {
-            mensaje += " Avatar actualizado.";
-        }
-
-        if (contraseñaActualizada = true) {
-            mensaje += " Contraseña actualizada.";
-        }
-
-        
-
-        // Enviar mensaje al JSP
         if (actualizado) {
-            session.setAttribute("usuario", usuario); // Actualizar el usuario en sesión
+            session.setAttribute("usuario", usuario);
             request.setAttribute("mensaje", mensaje);
             request.setAttribute("tipoMensaje", "success");
         } else {

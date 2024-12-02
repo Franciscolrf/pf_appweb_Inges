@@ -10,7 +10,12 @@
         <h1>Error 500: Excepción Interna</h1>
         <p>Algo salió mal en el servidor. Estamos trabajando para solucionarlo.</p>
         <p><strong>Detalles del error:</strong></p>
-        <pre><%= request.getAttribute("jakarta.servlet.error.exception").toString() %></pre>
+        <<pre>
+            <%= request.getAttribute("jakarta.servlet.error.exception") != null
+            ? request.getAttribute("jakarta.servlet.error.exception").toString()
+            : "No hay detalles disponibles."%>
+        </pre>
+
         <a href="index.html" class="btn">Volver al inicio</a>
     </div>
 </body>

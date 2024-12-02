@@ -21,7 +21,6 @@
 
             <h1>Registro de Usuario</h1>
 
-            
             <!-- Mostrar mensaje dinámico -->
             <c:if test="${not empty mensaje}">
                 <div class="${tipoMensaje == 'success' ? 'alert-success' : 'alert-error'}">
@@ -46,7 +45,7 @@
                 <input type="password" id="confirmarContrasenia" name="confirmarContrasenia" required>
 
                 <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" required  maxlength="10"
+                <input type="tel" id="telefono" name="telefono" required maxlength="10"
                        pattern="[0-9]{10}" title="Solo se permiten números">
 
                 <label>Avatar (Opcional):</label>
@@ -74,7 +73,6 @@
                 </button>
             </form>
 
-
             <a href="index.jsp">
                 <button class="exit-btn">
                     <i class="fa-solid fa-xmark"></i>
@@ -83,7 +81,7 @@
         </section>
     </main>
 
-                <script src="scripts/registro.js"></script>
+    <script src="scripts/registro.js"></script>
 </body>
 
 </html>

@@ -60,7 +60,7 @@
                     <h2>Publicaciones Ancladas</h2>
                     <div class="post-container">
                         <% if (anclados != null && !anclados.isEmpty()) {
-                            for (PostDTO post : anclados) {%>
+                                for (PostDTO post : anclados) {%>
                         <div class="post">
                             <h3><%= post.getTitulo()%></h3>
                             <p><%= post.getContenido()%></p>
@@ -81,8 +81,7 @@
                 <section class="published-posts">
                     <h2>Publicaciones Recientes</h2>
                     <div class="post-container">
-                        <%
-                            if (publicaciones != null && !publicaciones.isEmpty()) {
+                        <% if (publicaciones != null && !publicaciones.isEmpty()) {
                                 boolean hayPublicaciones = false;
                                 for (PostDTO post : publicaciones) {
                                     if (!post.isAnclado()) {
@@ -92,15 +91,11 @@
                             <h3><%= post.getTitulo()%></h3>
                             <p><%= post.getContenido()%></p>
                             <div class="post-actions">
-                                <%
-                                    // Verificar si el usuario es administrador
-                                    if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {
-                                %>
+                                <% // Verificar si el usuario es administrador
+                                    if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {%>
                                 <button class="delete-btn" onclick="eliminarPost(<%= post.getId()%>)"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                                <%
-                                    // Verificar si el usuario es normal y es el propietario de la publicación
-                                } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal") && usuario.getId().equals(post.getUsuario().getId())) {
-                                %>
+                                <% // Verificar si el usuario es normal y es el propietario de la publicación
+                                } else if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal") && usuario.getId().equals(post.getUsuario().getId())) {%>
                                 <button class="edit-btn" onclick="editarPost(<%= post.getId()%>)"><i class="fa-solid fa-pencil"></i> Editar</button>
                                 <% } %>
                             </div>
@@ -125,33 +120,32 @@
                                 <% } %>
                             </div>
 
-                            <!-- Formulario para agregar comentarios -->
-                            <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) {%>
-                            <form action="comentarioServlet" method="post" class="comment-form">
-                                <input type="hidden" name="postId" value="<%= post.getId()%>">
-                                <textarea name="contenido" placeholder="Escribe tu comentario aquí..." required></textarea>
-                                <button type="submit" class="add-comment-btn"><i class="fa-solid fa-paper-plane"></i> Agregar comentario</button>
-                            </form>
-                            <% } %>
+                                <!-- Área para agregar comentarios (Solo para usuarios normales) -->
+                                <% if (usuario.getTipoUsuario().toString().equalsIgnoreCase("Normal")) {%>
+                                <div class="add-comment-section">
+                                    <textarea class="comment-textarea" data-post-id="<%= post.getId()%>" placeholder="Escribe tu comentario aquí..." required></textarea>
+                                    <button class="add-comment-btn">
+                                        <i class="fa-solid fa-paper-plane"></i> Agregar comentario
+                                    </button>
+                                </div>
+                                <% } %>
+
+
+
                         </div>
-                        <%
-                                }
+                        <% }
                             }
-                            if (!hayPublicaciones) {
-                        %>
+                            if (!hayPublicaciones) { %>
                         <p>No hay publicaciones recientes.</p>
-                        <%
-                            }
-                        } else {
-                        %>
+                        <% }
+                        } else { %>
                         <p>No hay publicaciones recientes.</p>
                         <% }%>
                     </div>
                 </section>
-
+            </section>
         </main>
-
-                    <script src="scripts/publicaciones.js"></script>
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="scripts/publicaciones.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>

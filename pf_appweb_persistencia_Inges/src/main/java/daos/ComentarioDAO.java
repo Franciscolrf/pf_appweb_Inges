@@ -22,10 +22,12 @@ public class ComentarioDAO implements IComentarioDAO {
 
     @Override
     public boolean agregarComentario(Comentario comentario) {
+        if(comentario==null || comentario.getPost()==null){
+            throw new IllegalArgumentException("El comentario o post esta vacio.");
+        }
         String sql = "INSERT INTO comentarios (contenido, usuario_id, post_id, fechaHora) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
-
             statement.setString(1, comentario.getContenido());
             statement.setLong(2, comentario.getUsuario().getId());
             statement.setLong(3, comentario.getPost().getId());

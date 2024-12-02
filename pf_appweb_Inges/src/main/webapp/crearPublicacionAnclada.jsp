@@ -31,17 +31,18 @@
     </header>
     <main class="container">
         <section class="form-container">
-            <h2>¡Publica contenido importante!</h2>
+            <h2>¡Comparte algo importante!</h2>
             <form action="createPostServlet" method="POST">
                 <div class="form-group">
                     <label for="titulo">Título</label>
-                    <input type="text" id="titulo" name="titulo" placeholder="Título de la publicación anclada" required>
+                    <input type="text" id="titulo" name="titulo" placeholder="Título de la publicación" required>
                 </div>
                 <div class="form-group">
                     <label for="contenido">Contenido</label>
                     <textarea id="contenido" name="contenido" rows="8" placeholder="Escribe aquí el contenido..." required></textarea>
                 </div>
-                <input type="hidden" name="anclado" value="true">
+                <!-- Campo oculto para indicar que esta publicación es anclada -->
+                <input type="hidden" name="esAnclado" value="true">
                 <div class="form-group">
                     <button type="submit" class="submit-btn"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
                 </div>

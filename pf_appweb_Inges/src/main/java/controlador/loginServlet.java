@@ -4,6 +4,8 @@
  */
 package controlador;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -15,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
@@ -83,28 +86,39 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JsonObject jsonResponse = new JsonObject();
+
         try {
-            // Obtener los parámetros del formulario
-            String correo = request.getParameter("correo");
-            String contrasenia = request.getParameter("contrasenia");
+            BufferedReader reader = request.getReader();
+            JsonObject requestBody = JsonParser.parseReader(reader).getAsJsonObject();
+
+            String correo = requestBody.get("correo").getAsString();
+            String contrasenia = requestBody.get("contrasenia").getAsString();
 
             UsuarioBO usuarioBO = new UsuarioBO();
             UsuarioDTO usuarioDTO = usuarioBO.validarLogin(correo, contrasenia);
 
             if (usuarioDTO == null) {
-                // Redirigir a login.jsp con mensaje de error si las credenciales no son correctas
-                response.sendRedirect("login.jsp?error=incorrectCredentials");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                jsonResponse.addProperty("error", "Correo o contraseña incorrectos.");
             } else {
-                // Si las credenciales son correctas, iniciar sesión y redirigir al servlet de publicaciones
                 HttpSession session = request.getSession();
                 session.setAttribute("usuario", usuarioDTO);
-                response.sendRedirect("PublicacionesServlet");
+
+                jsonResponse.addProperty("success", true);
+                jsonResponse.addProperty("message", "Inicio de sesión exitoso.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(loginServlet.class.getName()).log(Level.SEVERE, null, ex);
-            response.sendRedirect("login.jsp?error=internalError");
+            ex.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.addProperty("error", "Ocurrió un error interno. Inténtalo más tarde.");
         }
+
+        response.getWriter().write(jsonResponse.toString());
     }
+
 
 
     /**

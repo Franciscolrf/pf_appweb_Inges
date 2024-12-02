@@ -19,12 +19,11 @@ public class Mapeos {
         usuario.setTelefono(usuarioDTO.getTelefono());
         usuario.setAvatar(usuarioDTO.getAvatar());
         usuario.setContrasenia(usuarioDTO.getContrasenia());
-        usuario.setGenero(usuarioDTO.getGenero()); 
-        usuario.setTipoUsuario(usuarioDTO.getTipoUsuario()); 
+        usuario.setGenero(usuarioDTO.getGenero());
+        usuario.setTipoUsuario(usuarioDTO.getTipoUsuario());
         usuario.setFechaNacimiento(usuarioDTO.getFechaNacimiento());
         usuario.setDireccion(usuarioDTO.getDireccion());
-        
-        
+
         return usuario;
     }
 
@@ -40,11 +39,9 @@ public class Mapeos {
         usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
         usuarioDTO.setFechaNacimiento(usuario.getFechaNacimiento());
         usuarioDTO.setDireccion(usuario.getDireccion());
-        
+
         return usuarioDTO;
     }
-
-
 
     // Convertir Entidad Post a DTO
     public PostDTO entidadToDTO(Post post) {
@@ -62,8 +59,8 @@ public class Mapeos {
         }
         return postDTO;
     }
-    
-     // Convertir DTO Post a Entidad
+
+    // Convertir DTO Post a Entidad
     public Post dtoToEntidad(PostDTO postDTO) {
         Post post = new Post();
         post.setId(postDTO.getId());
@@ -79,7 +76,7 @@ public class Mapeos {
         }
         return post;
     }
-    
+
     // Convertir Entidad Comentario a DTO
     public ComentarioDTO comentarioEntidadToDTO(Comentario comentario) {
         ComentarioDTO comentarioDTO = new ComentarioDTO();
@@ -105,6 +102,41 @@ public class Mapeos {
             Usuario usuario = dtoToUsuario(comentarioDTO.getUsuario());
             comentario.setUsuario(usuario);
         }
+
+        if (comentarioDTO.getPost() != null) {
+            Post post = postDtoToEntidad(comentarioDTO.getPost());
+            comentario.setPost(post);
+        }
         return comentario;
     }
+
+    public Post postDtoToEntidad(PostDTO postDTO) {
+        Post post = new Post();
+
+        // Asignar el ID del post
+        post.setId(postDTO.getId());
+
+        // Asignar los valores básicos (título, contenido, etc.)
+        post.setTitulo(postDTO.getTitulo());
+        post.setContenido(postDTO.getContenido());
+        post.setAnclado(postDTO.isAnclado());
+
+        // Asignar fechas si están presentes
+        if (postDTO.getFechaHoraCreacion() != null) {
+            post.setFechaHoraCreacion(postDTO.getFechaHoraCreacion());
+        }
+
+        if (postDTO.getFechaHoraEdicion() != null) {
+            post.setFechaHoraEdicion(postDTO.getFechaHoraEdicion());
+        }
+
+        // Asignar el usuario asociado si está presente en el DTO
+        if (postDTO.getUsuario() != null) {
+            Usuario usuario = dtoToUsuario(postDTO.getUsuario());
+            post.setUsuario(usuario);
+        }
+
+        return post;
+    }
+
 }

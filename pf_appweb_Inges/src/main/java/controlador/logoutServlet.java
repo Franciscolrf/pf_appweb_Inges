@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -58,14 +59,26 @@ public class logoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Invalida la sesión actual
-        HttpSession session = request.getSession(false); // Obtiene la sesión sin crear una nueva si no existe
-        if (session != null) {
-            session.invalidate(); // Invalida la sesión
-        }
+        try {
+            // Invalida la sesión actual
+            HttpSession session = request.getSession(false); // Obtiene la sesión sin crear una nueva si no existe
+            if (session != null) {
+                session.invalidate(); // Invalida la sesión
+            }
 
-        // Redirige al usuario a la página de login o inicio
-        response.sendRedirect("login.jsp");
+            response.sendRedirect("login.jsp");
+        } catch (Exception e) {
+            // En caso de error, enviar el código de error 500 y un mensaje JSON con el problema
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            JsonObject responseJson = new JsonObject();
+            responseJson.addProperty("success", false);
+            responseJson.addProperty("error", "Ocurrió un error al cerrar la sesión.");
+
+            response.getWriter().write(responseJson.toString());
+        }
     }
 
     /**

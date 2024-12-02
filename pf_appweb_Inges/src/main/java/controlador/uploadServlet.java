@@ -83,10 +83,18 @@ public class uploadServlet extends HttpServlet {
         String nombreCompleto = request.getParameter("nombreCompleto");
         String correo = request.getParameter("correo");
         String contrasenia = request.getParameter("contrasenia");
+        String confirmarContrasenia = request.getParameter("confirmarContrasenia");
         String telefono = request.getParameter("telefono");
         String fechaNacimiento = request.getParameter("fechaNacimiento");
         String genero = request.getParameter("genero");
         String direccion = request.getParameter("direccion");
+
+        if (!contrasenia.equals(confirmarContrasenia)) {
+            request.setAttribute("mensaje", "Las contraseñas no coinciden.");
+            request.setAttribute("tipoMensaje", "error");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
 
         String avatarPath = null;
         Part filePart = request.getPart("avatar");
@@ -94,9 +102,8 @@ public class uploadServlet extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = getFileName(filePart);
 
-            if (fileName != null
-                    && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
-                String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+            if (fileName != null && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
+                String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdir();
@@ -107,7 +114,7 @@ public class uploadServlet extends HttpServlet {
                 filePart.write(avatarPath); // Guardar el archivo
 
                 // La ruta que se guardará en la base de datos será la ruta relativa
-                avatarPath = UPLOAD_DIRECTORY + "/" + fileName;
+                avatarPath = "uploads" + "/" + fileName;
             } else {
                 request.setAttribute("mensaje", "El archivo debe ser PNG o JPG.");
                 request.setAttribute("tipoMensaje", "error");
@@ -116,7 +123,7 @@ public class uploadServlet extends HttpServlet {
             }
         } else {
             // Asignar la ruta de imagen por defecto si no se ha subido ninguna imagen
-            avatarPath = DEFAULT_AVATAR_PATH;
+            avatarPath = "uploads/default.png";
         }
 
         // Crear DTO de usuario
@@ -145,9 +152,7 @@ public class uploadServlet extends HttpServlet {
 
             if (registroExitoso) {
                 // Redirigir al login con mensaje de éxito
-                request.setAttribute("mensaje", "Usuario registrado correctamente.");
-                request.setAttribute("tipoMensaje", "success");
-                response.sendRedirect("login.jsp");
+                response.sendRedirect("login.jsp?mensaje=Usuario registrado correctamente.");
             } else {
                 // Registro fallido genérico
                 request.setAttribute("mensaje", "No se pudo registrar el usuario. Inténtalo nuevamente.");
@@ -161,8 +166,6 @@ public class uploadServlet extends HttpServlet {
             request.setAttribute("tipoMensaje", "error");
             request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
-        // Manejar el error de correo duplicado
-
     }
 
     private String getFileName(Part part) {
@@ -174,6 +177,7 @@ public class uploadServlet extends HttpServlet {
         }
         return "";
     }
+
 
     /**
      * Returns a short description of the servlet.

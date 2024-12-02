@@ -77,61 +77,46 @@ public class createPostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        HttpSession session = request.getSession();
-        UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
-
-        JsonObject jsonResponse = new JsonObject();
-
-        if (usuario == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            jsonResponse.addProperty("success", false);
-            jsonResponse.addProperty("message", "Usuario no autenticado.");
-            response.getWriter().write(jsonResponse.toString());
-            return;
-        }
-
         try {
+            // Obtener los parámetros del formulario
             String titulo = request.getParameter("titulo");
             String contenido = request.getParameter("contenido");
-            boolean anclado = "true".equals(request.getParameter("anclado"));
+            String esAncladoParam = request.getParameter("esAnclado");
 
-            if (titulo == null || contenido == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Faltan parámetros requeridos.");
-                response.getWriter().write(jsonResponse.toString());
+            // Determinar si es una publicación anclada (por defecto es falsa)
+            boolean esAnclado = "true".equalsIgnoreCase(esAncladoParam);
+
+            UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
+            if (usuario == null) {
+                response.sendRedirect("login.jsp");
                 return;
             }
 
-            PostDTO nuevoPost = new PostDTO();
-            nuevoPost.setTitulo(titulo);
-            nuevoPost.setContenido(contenido);
-            nuevoPost.setUsuario(usuario);
-            nuevoPost.setAnclado(anclado);
+            // Crear el objeto PostDTO
+            PostDTO post = new PostDTO();
+            post.setTitulo(titulo);
+            post.setContenido(contenido);
+            post.setUsuario(usuario);
+            post.setAnclado(esAnclado); // Establecer si la publicación es anclada
 
-        // Guardar en la base de datos
-        PostBO postBO = new PostBO();
-        boolean creado = postBO.agregarPost(nuevoPost);
+            // Guardar la publicación utilizando el BO
+            PostBO postBO = new PostBO();
+            boolean exito = postBO.agregarPost(post);
 
-            if (creado) {
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("message", "Publicación anclada creada exitosamente.");
+            if (exito) {
+                // Redirigir al servlet de publicaciones
+                response.sendRedirect("PublicacionesServlet");
             } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Error al crear la publicación anclada.");
+                request.setAttribute("mensaje", "Error al crear la publicación.");
+                request.setAttribute("tipoMensaje", "error");
+                request.getRequestDispatcher("crearPublicaciones.jsp").forward(request, response);
             }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            jsonResponse.addProperty("success", false);
-            jsonResponse.addProperty("message", "Error interno del servidor.");
             e.printStackTrace();
+            request.setAttribute("mensaje", "Ocurrió un error al procesar la solicitud.");
+            request.setAttribute("tipoMensaje", "error");
+            request.getRequestDispatcher("crearPublicaciones.jsp").forward(request, response);
         }
-
-        response.getWriter().write(jsonResponse.toString());
     }
 
     /**

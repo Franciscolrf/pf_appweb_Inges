@@ -4,6 +4,11 @@
  */
 package controlador;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import negocio.ComentarioBO;
 import negocio.PostBO;
 import daos.ComentarioDAO;
@@ -18,6 +23,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.StringReader;
 
 /**
  *
@@ -78,24 +85,43 @@ public class comentarioServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         try {
-            // Obtener el ID del post y el contenido del comentario
-            String postIdParam = request.getParameter("postId");
-            String contenido = request.getParameter("contenido");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JsonObject responseJson = new JsonObject();
 
-            if (postIdParam == null || contenido == null || contenido.trim().isEmpty()) {
+        try {
+            // Leer el cuerpo de la solicitud
+            BufferedReader reader = request.getReader();
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+            }
+            String jsonString = jsonBuilder.toString();
+
+            // Parsear el JSON
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
+
+            // Extraer los parámetros del JSON
+            if (jsonObject == null || !jsonObject.has("postId") || !jsonObject.has("contenido")) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("Parámetros inválidos.");
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("message", "Parámetros inválidos.");
+                response.getWriter().write(responseJson.toString());
                 return;
             }
 
-            long postId = Long.parseLong(postIdParam);
+            long postId = jsonObject.get("postId").getAsLong();
+            String contenido = jsonObject.get("contenido").getAsString();
 
             // Obtener el usuario actual de la sesión
             UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
             if (usuario == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Usuario no autenticado.");
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("message", "Usuario no autenticado.");
+                response.getWriter().write(responseJson.toString());
                 return;
             }
 
@@ -105,7 +131,9 @@ public class comentarioServlet extends HttpServlet {
 
             if (post == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().write("El post no existe.");
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("message", "El post no existe.");
+                response.getWriter().write(responseJson.toString());
                 return;
             }
 
@@ -115,22 +143,41 @@ public class comentarioServlet extends HttpServlet {
             comentario.setUsuario(usuario);
             comentario.setPost(post);
 
+            // Verificar que todos los campos necesarios estén presentes
+            if (comentario.getPost() == null || comentario.getUsuario() == null || comentario.getContenido() == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("message", "El comentario no tiene todos los campos requeridos.");
+                response.getWriter().write(responseJson.toString());
+                return;
+            }
+
             // Guardar el comentario usando el DAO
             ComentarioBO comentarioBO = new ComentarioBO();
             boolean exito = comentarioBO.agregarComentario(comentario);
 
             if (exito) {
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("Comentario agregado exitosamente.");
-                response.sendRedirect("PublicacionesServlet");
+                responseJson.addProperty("success", true);
+                responseJson.addProperty("message", "Comentario agregado exitosamente.");
+                response.getWriter().write(responseJson.toString());
             } else {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write("Error al agregar el comentario.");
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("message", "Error al agregar el comentario.");
+                response.getWriter().write(responseJson.toString());
             }
+        } catch (JsonSyntaxException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            responseJson.addProperty("success", false);
+            responseJson.addProperty("message", "Error al parsear el JSON: " + e.getMessage());
+            response.getWriter().write(responseJson.toString());
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Ocurrió un error al procesar la solicitud.");
+            responseJson.addProperty("success", false);
+            responseJson.addProperty("message", "Ocurrió un error al procesar la solicitud.");
+            response.getWriter().write(responseJson.toString());
         }
     }
 

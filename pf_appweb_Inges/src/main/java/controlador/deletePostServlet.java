@@ -81,6 +81,40 @@ public class deletePostServlet extends HttpServlet {
         }
     }
     
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String postIdParam = request.getParameter("postId");
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            if (postIdParam != null) {
+                long postId = Long.parseLong(postIdParam);
+                PostDAO postDAO = new PostDAO();
+
+                boolean isDeleted = postDAO.eliminarPost(postId);
+
+                if (isDeleted) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.getWriter().write("{\"message\": \"Post eliminado exitosamente.\"}");
+                } else {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.getWriter().write("{\"error\": \"No se encontró el post.\"}");
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"ID de post inválido.\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error interno del servidor.\"}");
+        }
+    }
+
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.

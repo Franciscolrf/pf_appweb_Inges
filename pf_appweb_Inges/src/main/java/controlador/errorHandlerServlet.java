@@ -57,29 +57,29 @@ public class errorHandlerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         // Obtener detalles del error
         Integer statusCode = (Integer) request.getAttribute("jakarta.servlet.error.status_code");
         Throwable exception = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
 
-        // Configurar respuesta según el tipo de error
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
 
-        // Crear respuesta personalizada
-        response.getWriter().println("<html><body>");
+        response.getWriter().println("<html><head><title>Error</title></head><body>");
         response.getWriter().println("<h1>¡Ha ocurrido un error!</h1>");
-        
+
         if (statusCode != null) {
-            response.getWriter().println("<p>Código de estado: " + statusCode + "</p>");
+            response.getWriter().println("<p><strong>Código de estado:</strong> " + statusCode + "</p>");
         }
+
         if (exception != null) {
-            response.getWriter().println("<p>Excepción: " + exception.getMessage() + "</p>");
+            response.getWriter().println("<p><strong>Excepción:</strong> " + exception.getMessage() + "</p>");
+            response.getWriter().println("<pre>" + exception.toString() + "</pre>");
+        } else {
+            response.getWriter().println("<p>No se pudo obtener información detallada del error.</p>");
         }
-        
+
         response.getWriter().println("<a href='index.html'>Volver al inicio</a>");
         response.getWriter().println("</body></html>");
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
