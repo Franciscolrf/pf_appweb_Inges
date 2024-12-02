@@ -74,7 +74,7 @@
                 </button>
             </form>
 
-            <!-- Botón para volver al inicio -->
+
             <a href="index.jsp">
                 <button class="exit-btn">
                     <i class="fa-solid fa-xmark"></i>
@@ -83,12 +83,7 @@
         </section>
     </main>
 
-    <script>
-        function changeIconColor() {
-            const uploadIcon = document.getElementById("uploadIcon");
-            uploadIcon.style.color = "green";
-        }
-    </script>
+                <script src="scripts/registro.js"></script>
 </body>
 
 </html>

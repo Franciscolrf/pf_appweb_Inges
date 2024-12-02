@@ -151,22 +151,7 @@
 
         </main>
 
-        <script>
-            function eliminarPost(postId) {
-                if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
-                    window.location.href = "deletePostServlet?postId=" + encodeURIComponent(postId);
-                }
-            }
-
-            function eliminarComentario(comentarioId) {
-                if (confirm("¿Estás seguro de que deseas eliminar este comentario?")) {
-                    window.location.href = "deleteCommentServlet?comentarioId=" + encodeURIComponent(comentarioId);
-                }
-            }
-
-            function editarPost(postId) {
-                window.location.href = "editPostServlet?postId=" + encodeURIComponent(postId);
-            }
-        </script>
+                    <script src="scripts/publicaciones.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>
