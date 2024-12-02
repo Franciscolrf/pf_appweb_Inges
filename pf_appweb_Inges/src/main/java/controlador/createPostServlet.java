@@ -113,8 +113,8 @@ public class createPostServlet extends HttpServlet {
             nuevoPost.setAnclado(anclado);
 
         // Guardar en la base de datos
-        PostDAO postDAO = new PostDAO();
-        boolean creado = postDAO.agregarPost(nuevoPost);
+        PostBO postBO = new PostBO();
+        boolean creado = postBO.agregarPost(nuevoPost);
 
             if (creado) {
                 jsonResponse.addProperty("success", true);
