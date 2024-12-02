@@ -77,13 +77,7 @@
         </section>
     </main>
 
-    <script>
-        function confirmDelete() {
-            if (confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) {
-                window.location.href = "deleteUserServlet"; 
-            }
-        }
-    </script>
+                <script src="scripts/configUsuario.js"></script>
 </body>
 </html>
 
