@@ -20,7 +20,7 @@
     <body>
         <div class="form-container">
             <h2>Editar Publicación</h2>
-            <form action="editPostServlet" method="post">
+            <form id="editPostForm">
                 <input type="hidden" name="postId" value="<%= post.getId()%>">
                 <div class="form-group">
                     <label for="titulo">Título</label>
@@ -33,7 +33,7 @@
 
                 <% if (!post.isAnclado()) { %>
                 <div class="form-actions">
-                    <button type="submit" class="submit-btn">
+                    <button type="button" class="submit-btn">
                         <i class="fa-solid fa-save"></i> Guardar Cambios
                     </button>
                     <a href="PublicacionesServlet" class="cancel-btn">
@@ -46,5 +46,6 @@
             </form>
         </div>
 
+        <script src="scripts/editarPublicacion.js"></script>
     </body>
 </html>

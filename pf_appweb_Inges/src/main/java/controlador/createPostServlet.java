@@ -5,6 +5,7 @@
 package controlador;
 
 import negocio.PostBO;
+import com.google.gson.JsonObject;
 import daos.PostDAO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
@@ -76,34 +77,61 @@ public class createPostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession();
         UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
 
+        JsonObject jsonResponse = new JsonObject();
+
         if (usuario == null) {
-            response.sendRedirect("login.jsp");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            jsonResponse.addProperty("success", false);
+            jsonResponse.addProperty("message", "Usuario no autenticado.");
+            response.getWriter().write(jsonResponse.toString());
             return;
         }
 
-        String titulo = request.getParameter("titulo");
-        String contenido = request.getParameter("contenido");
-        boolean anclado = request.getParameter("anclado") != null; // Solo admins pueden anclar
+        try {
+            String titulo = request.getParameter("titulo");
+            String contenido = request.getParameter("contenido");
+            boolean anclado = "true".equals(request.getParameter("anclado"));
 
-        // Crear un nuevo PostDTO
-        PostDTO nuevoPost = new PostDTO();
-        nuevoPost.setTitulo(titulo);
-        nuevoPost.setContenido(contenido);
-        nuevoPost.setAnclado(anclado);
-        nuevoPost.setUsuario(usuario);
+            if (titulo == null || contenido == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Faltan parámetros requeridos.");
+                response.getWriter().write(jsonResponse.toString());
+                return;
+            }
+
+            PostDTO nuevoPost = new PostDTO();
+            nuevoPost.setTitulo(titulo);
+            nuevoPost.setContenido(contenido);
+            nuevoPost.setUsuario(usuario);
+            nuevoPost.setAnclado(anclado);
 
         // Guardar en la base de datos
-        PostBO postBO = new PostBO();
-        boolean creado = postBO.agregarPost(nuevoPost);
+        PostDAO postDAO = new PostDAO();
+        boolean creado = postDAO.agregarPost(nuevoPost);
 
-        if (creado) {
-            response.sendRedirect("PublicacionesServlet");
-        } else {
-            response.sendRedirect("crearPublicaciones.jsp?status=postError");
+            if (creado) {
+                jsonResponse.addProperty("success", true);
+                jsonResponse.addProperty("message", "Publicación anclada creada exitosamente.");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Error al crear la publicación anclada.");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            jsonResponse.addProperty("success", false);
+            jsonResponse.addProperty("message", "Error interno del servidor.");
+            e.printStackTrace();
         }
+
+        response.getWriter().write(jsonResponse.toString());
     }
 
     /**

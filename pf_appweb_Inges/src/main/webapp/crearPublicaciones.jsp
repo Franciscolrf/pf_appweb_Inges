@@ -4,7 +4,12 @@
     // Obtener el usuario de la sesión
     UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
     if (usuario == null) {
+        // Redirigir al login si no hay sesión
         response.sendRedirect("login.jsp");
+        return;
+    } else if (!usuario.getTipoUsuario().toString().equalsIgnoreCase("Admor")) {
+        // Redirigir a publicaciones.jsp si el usuario no es administrador
+        response.sendRedirect("PublicacionesServlet");
         return;
     }
 %>
@@ -13,34 +18,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/styleCrearPublicaciones.css">
+    <link rel="stylesheet" href="styles/styleCrearPublicacionAnclada.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <title>Crear Publicación</title>
+    <title>Crear Publicación Anclada</title>
 </head>
 <body>
     <header>
-        <h1>Crear Publicación</h1>
+        <h1>Crear Publicación Anclada</h1>
         <nav>
             <a href="PublicacionesServlet" class="exit-btn"><i class="fa-solid fa-arrow-left"></i></a>
         </nav>
     </header>
     <main class="container">
         <section class="form-container">
-            <h2>¡Comparte tus ideas!</h2>
-            <form action="createPostServlet" method="POST">
+            <h2>¡Publica contenido importante!</h2>
+            <form id="createPinnedPostForm">
                 <div class="form-group">
                     <label for="titulo">Título</label>
-                    <input type="text" id="titulo" name="titulo" placeholder="Título de la publicación" required>
+                    <input type="text" id="titulo" name="titulo" placeholder="Título de la publicación anclada" required>
                 </div>
                 <div class="form-group">
                     <label for="contenido">Contenido</label>
                     <textarea id="contenido" name="contenido" rows="8" placeholder="Escribe aquí el contenido..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="submit-btn"><i class="fa-solid fa-paper-plane"></i> Publicar</button>
+                    <button type="button" class="submit-btn" id="submitPinnedPostBtn">
+                        <i class="fa-solid fa-paper-plane"></i> Publicar
+                    </button>
                 </div>
             </form>
         </section>
     </main>
+    <script src="scripts/crearPublicacionAnclada.js"></script>
 </body>
 </html>
