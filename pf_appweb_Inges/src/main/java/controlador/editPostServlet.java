@@ -4,6 +4,8 @@
  */
 package controlador;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import daos.PostDAO;
 import dtos.PostDTO;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 
 /**
  *
@@ -93,43 +96,51 @@ public class editPostServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String idParam = request.getParameter("postId");
-        String titulo = request.getParameter("titulo");
-        String contenido = request.getParameter("contenido");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JsonObject responseJson = new JsonObject();
 
         try {
-            // Validar que todos los parámetros están presentes
-            if (idParam == null || titulo == null || contenido == null) {
-                response.sendRedirect("PublicacionesServlet?error=missingParameters");
-                return;
-            }
+            // Leer los datos enviados en JSON
+            BufferedReader reader = request.getReader();
+            JsonObject jsonBody = JsonParser.parseReader(reader).getAsJsonObject();
 
-            long id = Long.parseLong(idParam);
+            long postId = jsonBody.get("postId").getAsLong();
+            String titulo = jsonBody.get("titulo").getAsString();
+            String contenido = jsonBody.get("contenido").getAsString();
 
             PostDAO postDAO = new PostDAO();
-            PostDTO postDTO = postDAO.obtenerPostPorId(id);
+            PostDTO postDTO = postDAO.obtenerPostPorId(postId);
 
-            if (postDTO.isAnclado()) {
-                response.sendRedirect("editarPublicacion.jsp?postId=" + postDTO.getId() + "&error=notEditable");
-                return;
-            }
-
-            postDTO.setTitulo(titulo);
-            postDTO.setContenido(contenido);
-
-            boolean isUpdated = postDAO.modificarPost(postDTO);
-
-            if (isUpdated) {
-                response.sendRedirect("PublicacionesServlet?success=postUpdated");
+            if (postDTO == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                responseJson.addProperty("error", "La publicación no existe.");
+            } else if (postDTO.isAnclado()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                responseJson.addProperty("error", "Las publicaciones ancladas no pueden ser editadas.");
             } else {
-                response.sendRedirect("PublicacionesServlet?error=updateFailed");
+                postDTO.setTitulo(titulo);
+                postDTO.setContenido(contenido);
+                boolean isUpdated = postDAO.modificarPost(postDTO);
+
+                if (isUpdated) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    responseJson.addProperty("success", true);
+                    responseJson.addProperty("message", "Publicación actualizada con éxito.");
+                } else {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    responseJson.addProperty("error", "No se pudo actualizar la publicación.");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("PublicacionesServlet?error=internalError");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            responseJson.addProperty("error", "Ocurrió un error interno en el servidor.");
         }
 
+        response.getWriter().write(responseJson.toString());
     }
+
 
     /**
      * Returns a short description of the servlet.

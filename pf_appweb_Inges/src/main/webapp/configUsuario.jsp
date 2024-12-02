@@ -71,8 +71,9 @@
 
                 <div class="button-group">
                     <button type="submit" class="save-btn">Guardar Cambios</button>
-                    <button type="button" class="delete-btn" onclick="confirmDelete()">Eliminar Cuenta</button>
+                    <button type="button" id="btn-delete-user" class="delete-btn">Eliminar Cuenta</button>
                 </div>
+
             </form>
         </section>
     </main>

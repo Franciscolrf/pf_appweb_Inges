@@ -4,6 +4,7 @@
  */
 package controlador;
 
+import com.google.gson.JsonObject;
 import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
 import java.io.IOException;
@@ -89,6 +90,54 @@ public class deleteUserServlet extends HttpServlet {
             response.sendRedirect("configUsuario.jsp?status=deleteError");
         }
     }
+    
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        HttpSession session = request.getSession();
+        UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("usuario");
+        JsonObject responseJson = new JsonObject();
+
+        if (usuario == null) {
+            // Si no hay sesión, responder con error de autenticación
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            responseJson.addProperty("error", "Usuario no autenticado.");
+            response.getWriter().write(responseJson.toString());
+            return;
+        }
+
+        try {
+            // Llamar al método de eliminación en UsuarioDAO
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            boolean eliminado = usuarioDAO.eliminarUsuario(usuario.getId());
+
+            if (eliminado) {
+                // Si se eliminó correctamente, invalidar la sesión
+                session.invalidate();
+                response.setStatus(HttpServletResponse.SC_OK);
+                responseJson.addProperty("success", true);
+                responseJson.addProperty("message", "Usuario eliminado con éxito.");
+            } else {
+                // Si hubo un error al eliminar el usuario
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                responseJson.addProperty("success", false);
+                responseJson.addProperty("error", "No se pudo eliminar el usuario.");
+            }
+        } catch (Exception ex) {
+            // Manejo de errores del servidor
+            Logger.getLogger(deleteUserServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            responseJson.addProperty("error", "Ocurrió un error inesperado al eliminar el usuario.");
+        }
+
+        // Enviar la respuesta JSON
+        response.getWriter().write(responseJson.toString());
+    }
+
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
