@@ -4,7 +4,7 @@
  */
 package controlador;
 
-import bo.PostBO;
+import negocio.PostBO;
 import daos.PostDAO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;

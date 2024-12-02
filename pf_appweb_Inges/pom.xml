@@ -27,12 +27,12 @@
         </dependency>
         <dependency>
             <groupId>com.mycompany</groupId>
-            <artifactId>pf_appweb_persistencia_Inges</artifactId>
+            <artifactId>pf_appweb_negocio_Inges</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.mycompany</groupId>
-            <artifactId>pf_appweb_negocio_Inges</artifactId>
+            <artifactId>pf_appweb_persistencia_Inges</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

@@ -1,4 +1,4 @@
-package bo;
+package negocio;
 
 import conversor.Mapeos;
 import daos.ComentarioDAO;

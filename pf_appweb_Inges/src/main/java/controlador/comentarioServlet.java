@@ -4,8 +4,8 @@
  */
 package controlador;
 
-import bo.ComentarioBO;
-import bo.PostBO;
+import negocio.ComentarioBO;
+import negocio.PostBO;
 import daos.ComentarioDAO;
 import daos.PostDAO;
 import dtos.ComentarioDTO;

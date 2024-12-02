@@ -141,7 +141,7 @@ public class PostDAO implements IPostDAO {
     @Override
     public Post obtenerPostPorId(long postId) {
         String sql = "SELECT * FROM posts WHERE id = ?";
-        Post postDTO = null;
+        Post post = new Post();
 
         try (Connection connection = ConexionBD.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -150,7 +150,7 @@ public class PostDAO implements IPostDAO {
 
             if (resultSet.next()) {
                 // Mapear los datos del post
-                Post post = new Post();
+                
                 post.setId(resultSet.getLong("id"));
                 post.setTitulo(resultSet.getString("titulo"));
                 post.setContenido(resultSet.getString("contenido"));
@@ -175,7 +175,7 @@ public class PostDAO implements IPostDAO {
             e.printStackTrace();
         }
 
-        return postDTO;
+        return post;
     }
 
 }
