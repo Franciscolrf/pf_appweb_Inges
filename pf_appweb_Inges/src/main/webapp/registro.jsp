@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/styleRegistro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Registro Usuario</title>
 </head>
 
@@ -28,7 +29,7 @@
                 </div>
             </c:if>
 
-            <form action="uploadServlet" method="post" class="register-form" enctype="multipart/form-data">
+            <form id="registroForm" action="uploadServlet" method="post" class="register-form" enctype="multipart/form-data">
                 <label for="nombreCompleto">Nombre completo:</label>
                 <input type="text" id="nombreCompleto" name="nombreCompleto" required 
                        pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras">
@@ -69,15 +70,13 @@
                 </select>
 
                 <button type="submit" class="btn">
-                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <i class="fa fa-check" aria-hidden="true"></i> 
                 </button>
             </form>
 
-            <a href="index.jsp">
-                <button class="exit-btn">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </a>
+            <button class="exit-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </section>
     </main>
 
