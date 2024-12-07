@@ -5,9 +5,7 @@ import dtos.PostDTO;
 import dtos.UsuarioDTO;
 import modelo.Comentario;
 import modelo.Usuario;
-import modelo.Genero;
 import modelo.Post;
-import modelo.TipoUsuario;
 
 public class Mapeos {
 
