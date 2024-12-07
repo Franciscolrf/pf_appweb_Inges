@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utileria.PostDTOFactory;
 
 /**
  *
@@ -90,16 +91,9 @@ public class createPostServlet extends HttpServlet {
                 return;
             }
 
-            // Crear el objeto PostDTO
-            PostDTO post = new PostDTO();
-            post.setTitulo(titulo);
-            post.setContenido(contenido);
-            post.setUsuario(usuario);
-            post.setAnclado(esAnclado); // Establecer si la publicación es anclada
-
             // Guardar la publicación utilizando la fachada.
             IFachadaApp fachada = new FachadaApp();
-            boolean exito = fachada.agregarPost(post);
+            boolean exito = fachada.agregarPost(PostDTOFactory.createPost(titulo, contenido, usuario, esAnclado));
 
             if (exito) {
                 // Redirigir al servlet de publicaciones
