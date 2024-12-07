@@ -5,12 +5,13 @@
 package controlador;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import daos.ComentarioDAO;
 import daos.PostDAO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,7 +20,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import negocio.PostBO;
 
 /**
  *
@@ -31,12 +31,12 @@ public class PublicacionesServlet extends HttpServlet {
     private PostDAO postDAO;
     private ComentarioDAO comentarioDAO;
 
-    
     @Override
     public void init() throws ServletException {
         postDAO = new PostDAO();
         comentarioDAO = new ComentarioDAO();
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -73,47 +73,44 @@ public class PublicacionesServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    // Obtener el usuario de la sesión
-    UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
-    if (usuario == null) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-
-    try {
-        PostBO postBO = new PostBO();
-        List<PostDTO> publicaciones = postBO.obtenerTodasLasPublicaciones();
-        List<PostDTO> publicacionesAncladas = postBO.obtenerPublicacionesAncladas();
-
-        // Verificar si la solicitud es una llamada Ajax
-        String requestedWith = request.getHeader("X-Requested-With");
-        if ("XMLHttpRequest".equals(requestedWith)) {
-            // Responder en JSON para solicitudes Ajax
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-
-            JsonObject responseJson = new JsonObject();
-            responseJson.add("usuario", new Gson().toJsonTree(usuario));
-            responseJson.add("anclados", new Gson().toJsonTree(publicacionesAncladas));
-            responseJson.add("recientes", new Gson().toJsonTree(publicaciones));
-
-            response.getWriter().write(responseJson.toString());
-        } else {
-            // Devolver la vista JSP
-            request.setAttribute("publicaciones", publicaciones);
-            request.setAttribute("anclados", publicacionesAncladas);
-            request.getRequestDispatcher("publicaciones.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Obtener el usuario de la sesión
+        UsuarioDTO usuario = (UsuarioDTO) request.getSession().getAttribute("usuario");
+        if (usuario == null) {
+            response.sendRedirect("login.jsp");
+            return;
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("error.jsp");
+
+        try {
+            IFachadaApp fachada = new FachadaApp();
+            List<PostDTO> publicaciones = fachada.obtenerTodasLasPublicaciones();
+            List<PostDTO> publicacionesAncladas = fachada.obtenerPublicacionesAncladas();
+
+            // Verificar si la solicitud es una llamada Ajax
+            String requestedWith = request.getHeader("X-Requested-With");
+            if ("XMLHttpRequest".equals(requestedWith)) {
+                // Responder en JSON para solicitudes Ajax
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                JsonObject responseJson = new JsonObject();
+                responseJson.add("usuario", new Gson().toJsonTree(usuario));
+                responseJson.add("anclados", new Gson().toJsonTree(publicacionesAncladas));
+                responseJson.add("recientes", new Gson().toJsonTree(publicaciones));
+
+                response.getWriter().write(responseJson.toString());
+            } else {
+                // Devolver la vista JSP
+                request.setAttribute("publicaciones", publicaciones);
+                request.setAttribute("anclados", publicacionesAncladas);
+                request.getRequestDispatcher("publicaciones.jsp").forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
     }
-}
-
-
-
 
     /**
      * Handles the HTTP <code>POST</code> method.

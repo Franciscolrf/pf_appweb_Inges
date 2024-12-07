@@ -4,7 +4,8 @@
  */
 package controlador;
 
-import daos.ComentarioDAO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -62,9 +63,8 @@ public class deleteCommentServlet extends HttpServlet {
         try {
             if (comentarioIdParam != null) {
                 long comentarioId = Long.parseLong(comentarioIdParam);
-                ComentarioDAO comentarioDAO = new ComentarioDAO();
-
-                boolean isDeleted = comentarioDAO.eliminarComentario(comentarioId);
+                IFachadaApp fachada = new FachadaApp();
+                boolean isDeleted = fachada.eliminarComentario(comentarioId);
 
                 if (isDeleted) {
                     response.sendRedirect("PublicacionesServlet");
@@ -105,9 +105,8 @@ public class deleteCommentServlet extends HttpServlet {
         try {
             if (comentarioIdParam != null) {
                 long comentarioId = Long.parseLong(comentarioIdParam);
-                ComentarioDAO comentarioDAO = new ComentarioDAO();
-
-                boolean isDeleted = comentarioDAO.eliminarComentario(comentarioId);
+                IFachadaApp fachada = new FachadaApp();
+                boolean isDeleted = fachada.eliminarComentario(comentarioId);
 
                 if (isDeleted) {
                     response.setStatus(HttpServletResponse.SC_OK);

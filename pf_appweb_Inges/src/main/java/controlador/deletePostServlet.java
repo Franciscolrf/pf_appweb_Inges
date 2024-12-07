@@ -4,7 +4,8 @@
  */
 package controlador;
 
-import daos.PostDAO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -63,9 +64,8 @@ public class deletePostServlet extends HttpServlet {
         try {
             if (postIdParam != null) {
                 long postId = Long.parseLong(postIdParam);
-                PostDAO postDAO = new PostDAO();
-
-                boolean isDeleted = postDAO.eliminarPost(postId);
+                IFachadaApp fachada = new FachadaApp();
+                boolean isDeleted = fachada.eliminarPost(postId);
 
                 if (isDeleted) {
                     response.sendRedirect("PublicacionesServlet");
@@ -92,9 +92,8 @@ public class deletePostServlet extends HttpServlet {
         try {
             if (postIdParam != null) {
                 long postId = Long.parseLong(postIdParam);
-                PostDAO postDAO = new PostDAO();
-
-                boolean isDeleted = postDAO.eliminarPost(postId);
+                IFachadaApp fachada = new FachadaApp();
+                boolean isDeleted = fachada.eliminarPost(postId);
 
                 if (isDeleted) {
                     response.setStatus(HttpServletResponse.SC_OK);

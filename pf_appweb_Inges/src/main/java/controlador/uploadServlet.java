@@ -5,8 +5,9 @@
 package controlador;
 
 import com.google.gson.JsonObject;
-import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,13 +19,11 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
 import modelo.Genero;
 import modelo.TipoUsuario;
-import negocio.UsuarioBO;
 
 /**
  *
@@ -146,8 +145,8 @@ public class uploadServlet extends HttpServlet {
             usuario.setDireccion(direccion);
 
             // Guardar el usuario en la base de datos
-            UsuarioBO usuarioDAO = new UsuarioBO();
-            boolean registroExitoso = usuarioDAO.registrarUsuario(usuario);
+            IFachadaApp fachada = new FachadaApp();
+            boolean registroExitoso = fachada.registrarUsuario(usuario);
 
             if (registroExitoso) {
                 responseJson.addProperty("success", true);

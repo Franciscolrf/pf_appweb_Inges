@@ -4,11 +4,10 @@
  */
 package controlador;
 
-import negocio.PostBO;
-import com.google.gson.JsonObject;
-import daos.PostDAO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,7 +15,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -99,9 +97,9 @@ public class createPostServlet extends HttpServlet {
             post.setUsuario(usuario);
             post.setAnclado(esAnclado); // Establecer si la publicación es anclada
 
-            // Guardar la publicación utilizando el BO
-            PostBO postBO = new PostBO();
-            boolean exito = postBO.agregarPost(post);
+            // Guardar la publicación utilizando la fachada.
+            IFachadaApp fachada = new FachadaApp();
+            boolean exito = fachada.agregarPost(post);
 
             if (exito) {
                 // Redirigir al servlet de publicaciones

@@ -9,8 +9,9 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mapeos.Encriptar;
-import negocio.UsuarioBO;
 
 /**
  *
@@ -31,7 +28,6 @@ import negocio.UsuarioBO;
 public class loginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    Encriptar encriptar = new Encriptar();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -97,8 +93,8 @@ public class loginServlet extends HttpServlet {
             String correo = requestBody.get("correo").getAsString();
             String contrasenia = requestBody.get("contrasenia").getAsString();
 
-            UsuarioBO usuarioBO = new UsuarioBO();
-            UsuarioDTO usuarioDTO = usuarioBO.validarLogin(correo, contrasenia);
+             IFachadaApp fachada = new FachadaApp();
+            UsuarioDTO usuarioDTO = fachada.validarLogin(correo, contrasenia);
 
             if (usuarioDTO == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

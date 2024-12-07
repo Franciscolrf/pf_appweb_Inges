@@ -4,7 +4,6 @@
  */
 package controlador;
 
-import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
 
 import java.io.IOException;
@@ -22,10 +21,9 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mapeos.Encriptar;
-import conversor.Mapeos;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import modelo.Genero;
-import modelo.Usuario;
-import negocio.UsuarioBO;
 
 /**
  *
@@ -97,9 +95,8 @@ private static final String UPLOAD_DIRECTORY = "uploads";
             response.sendRedirect("login.jsp");
             return;
         }
-
-        UsuarioBO usuarioBO = new UsuarioBO();
-        UsuarioDTO usuarioActualizado = usuarioBO.obtenerUsuarioPorId(usuario.getId().intValue());
+        IFachadaApp fachada = new FachadaApp();
+        UsuarioDTO usuarioActualizado = fachada.obtenerUsuarioPorId(usuario.getId().intValue());
 
         String nombreCompletoFormulario = request.getParameter("nombreCompleto");
         if (nombreCompletoFormulario != null && !nombreCompletoFormulario.trim().isEmpty()
@@ -167,7 +164,7 @@ private static final String UPLOAD_DIRECTORY = "uploads";
             }
         }
 
-        boolean actualizado = usuarioBO.modificarUsuario(usuario, nuevaContrasenia);
+        boolean actualizado = fachada.modificarUsuario(usuario, nuevaContrasenia);
 
         if (actualizado) {
             session.setAttribute("usuario", usuario);

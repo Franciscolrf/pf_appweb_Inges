@@ -4,10 +4,11 @@
  */
 package controlador;
 
-import negocio.PostBO;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dtos.PostDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -67,8 +68,8 @@ public class editPostServlet extends HttpServlet {
         try {
             if (postIdParam != null) {
                 long postId = Long.parseLong(postIdParam);
-                PostBO postBO = new PostBO();
-                PostDTO postDTO = postBO.obtenerPostPorId(postId);
+                IFachadaApp fachada = new FachadaApp();
+                PostDTO postDTO = fachada.obtenerPostPorId(postId);
 
                 if (postDTO != null) {
                     request.setAttribute("post", postDTO);
@@ -109,8 +110,8 @@ public class editPostServlet extends HttpServlet {
             String titulo = jsonBody.get("titulo").getAsString();
             String contenido = jsonBody.get("contenido").getAsString();
 
-            PostBO postBO = new PostBO();
-            PostDTO postDTO = postBO.obtenerPostPorId(postId);
+             IFachadaApp fachada = new FachadaApp();
+                PostDTO postDTO = fachada.obtenerPostPorId(postId);
 
             if (postDTO == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -121,7 +122,7 @@ public class editPostServlet extends HttpServlet {
             } else {
                 postDTO.setTitulo(titulo);
                 postDTO.setContenido(contenido);
-                boolean isUpdated = postBO.modificarPost(postDTO);
+                boolean isUpdated = fachada.modificarPost(postDTO);
 
                 if (isUpdated) {
                     response.setStatus(HttpServletResponse.SC_OK);

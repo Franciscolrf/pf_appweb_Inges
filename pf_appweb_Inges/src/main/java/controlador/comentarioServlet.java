@@ -6,16 +6,13 @@ package controlador;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import negocio.ComentarioBO;
 import negocio.PostBO;
-import daos.ComentarioDAO;
-import daos.PostDAO;
 import dtos.ComentarioDTO;
 import dtos.PostDTO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -24,7 +21,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
-import java.io.StringReader;
 
 /**
  *
@@ -152,9 +148,9 @@ public class comentarioServlet extends HttpServlet {
                 return;
             }
 
-            // Guardar el comentario usando el DAO
-            ComentarioBO comentarioBO = new ComentarioBO();
-            boolean exito = comentarioBO.agregarComentario(comentario);
+            // Guardar el comentario usando la fachada.
+            IFachadaApp fachada = new FachadaApp();
+            boolean exito = fachada.agregarComentario(comentario);
 
             if (exito) {
                 response.setStatus(HttpServletResponse.SC_OK);

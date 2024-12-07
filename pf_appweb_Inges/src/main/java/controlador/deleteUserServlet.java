@@ -5,8 +5,9 @@
 package controlador;
 
 import com.google.gson.JsonObject;
-import daos.UsuarioDAO;
 import dtos.UsuarioDTO;
+import fachada.FachadaApp;
+import fachada.IFachadaApp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -73,9 +74,10 @@ public class deleteUserServlet extends HttpServlet {
         }
 
         try {
-            // Llamar al método de eliminación en UsuarioDAO
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            boolean eliminado = usuarioDAO.eliminarUsuario(usuario.getId());
+            // Llamar al método de eliminación en la Fachada
+            IFachadaApp fachada = new FachadaApp();
+            boolean eliminado = fachada.eliminarUsuario(usuario.getId());
+
 
             if (eliminado) {
                 // Si se eliminó correctamente, invalidar la sesión
@@ -110,9 +112,9 @@ public class deleteUserServlet extends HttpServlet {
         }
 
         try {
-            // Llamar al método de eliminación en UsuarioDAO
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            boolean eliminado = usuarioDAO.eliminarUsuario(usuario.getId());
+            // Llamar al método de eliminación en la Fachada
+            IFachadaApp fachada = new FachadaApp();
+            boolean eliminado = fachada.eliminarUsuario(usuario.getId());
 
             if (eliminado) {
                 // Si se eliminó correctamente, invalidar la sesión
